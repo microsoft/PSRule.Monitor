@@ -1,6 +1,7 @@
 ﻿// Copyright (c) Microsoft Corporation.
 // Licensed under the MIT License.
 
+using PSRule.Monitor.Configuration;
 using System;
 
 namespace PSRule.Monitor.Pipeline
