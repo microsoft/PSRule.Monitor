@@ -13,6 +13,46 @@ This project is to be considered a **proof-of-concept** and **not a supported pr
 If you have any problems please check our GitHub [issues](https://github.com/Microsoft/PSRule.Monitor/issues) page.
 If you do not see your problem captured, please file a new issue and follow the provided template.
 
+## Getting started
+
+### Upload results
+
+To upload results from PSRule to Azure Monitor, use the `Send-PSRuleMonitorRecord` cmdlet.
+Results can by piped directly from `Invoke-PSRule` or stored and piped from a variable.
+
+The `Send-PSRuleMonitorRecord` requires a Log Analytics workspace to send data to.
+The Id and key of the workspace can be specified by `-WorkspaceId` and `-SharedKey`.
+
+For example:
+
+```powershell
+$data | Invoke-PSRule | Send-PSRuleMonitorRecord;
+```
+
+The following example shows using analysis results from a pre-built module:
+
+```powershell
+$results = Invoke-PSRule -InputPath .\*.json -Module 'PSRule.Rules.Azure';
+$results | Send-PSRuleMonitorRecord -WorkspaceId <workspaceId> -SharedKey <primaryKey>;
+```
+
+### Querying logs from Azure Monitor
+
+The following query reviews all rule records from the last hour that failed:
+
+```text
+PSRule_CL
+| where Outcome_s == "Fail" and TimeGenerated > ago(1h)
+```
+
+## Language reference
+
+### Commands
+
+The following commands exist in the `PSRule.Monitor` module:
+
+- [Send-PSRuleMonitorRecord](docs/commands/PSRule.Monitor/en-US/Send-PSRuleMonitorRecord.md) - Send analysis results from PSRule to Azure Monitor.
+
 ## Changes and versioning
 
 Modules in this repository will use the [semantic versioning](http://semver.org/) model to declare breaking changes from v1.0.0.
@@ -40,7 +80,7 @@ or contact [opencode@microsoft.com](mailto:opencode@microsoft.com) with any addi
 
 ## License
 
-This project is [licensed under the MIT License](LICENSE.txt).
+This project is [licensed under the MIT License](LICENSE).
 
 [ci-badge]: https://dev.azure.com/bewhite/PSRule.Monitor/_apis/build/status/PSRule.Monitor-CI?branchName=master
 [module-psrule]: https://www.powershellgallery.com/packages/PSRule.Monitor
