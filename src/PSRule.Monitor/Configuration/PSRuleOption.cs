@@ -4,7 +4,7 @@
 using System.IO;
 using System.Management.Automation;
 
-namespace PSRule.Monitor
+namespace PSRule.Monitor.Configuration
 {
     /// <summary>
     /// A delgate to allow callback to PowerShell to get current working path.

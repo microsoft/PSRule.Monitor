@@ -87,17 +87,17 @@ stages:
       condition: succeededOrFailed()
 
     # Pester test results
-    # - task: PublishTestResults@2
-    #   displayName: 'Publish Pester results'
-    #   inputs:
-    #     testRunTitle: 'Pester on $(imageName)'
-    #     testRunner: NUnit
-    #     testResultsFiles: 'reports/pester-unit.xml'
-    #     mergeTestResults: true
-    #     platform: $(imageName)
-    #     configuration: $(buildConfiguration)
-    #     publishRunAttachments: true
-    #   condition: succeededOrFailed()
+    - task: PublishTestResults@2
+      displayName: 'Publish Pester results'
+      inputs:
+        testRunTitle: 'Pester on $(imageName)'
+        testRunner: NUnit
+        testResultsFiles: 'reports/pester-unit.xml'
+        mergeTestResults: true
+        platform: $(imageName)
+        configuration: $(buildConfiguration)
+        publishRunAttachments: true
+      condition: succeededOrFailed()
 
     # PSRule results
     # - task: PublishTestResults@2
