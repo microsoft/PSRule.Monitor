@@ -2,10 +2,12 @@
 // Licensed under the MIT License.
 
 using System;
+using System.Globalization;
 using System.Net;
 using System.Security;
 using System.Security.Cryptography;
 using System.Text;
+using System.Threading;
 
 namespace PSRule.Monitor.Pipeline
 {
@@ -13,6 +15,8 @@ namespace PSRule.Monitor.Pipeline
     {
         private readonly string _WorkspaceId;
         private readonly HMACSHA256 _Algorithm;
+
+        private static readonly CultureInfo FormatCulture = new CultureInfo("en-US");
 
         internal CollectionHash(string workspaceId, SecureString sharedKey)
         {
@@ -22,7 +26,7 @@ namespace PSRule.Monitor.Pipeline
 
         internal string ComputeSignature(int length, DateTime date, string contentType)
         {
-            var challenge = string.Concat("POST\n", length.ToString(), "\n", contentType, "; charset=utf-8\n", "x-ms-date:", date.ToString("r"), "\n/api/logs");
+            var challenge = string.Concat("POST\n", length, "\n", contentType, "; charset=utf-8\n", "x-ms-date:", date.ToString("r", FormatCulture), "\n/api/logs");
             return string.Concat("SharedKey ", _WorkspaceId, ":", ComputeHash(challenge));
         }
 
