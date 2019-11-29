@@ -235,28 +235,18 @@ task Analyze Build, PSScriptAnalyzer, {
     Invoke-ScriptAnalyzer -Path out/modules/PSRule.Monitor;
 }
 
-# Synopsis: Build table of content for rules
-task BuildRuleDocs Build, PSRule, PSDocs, {
-    Import-Module (Join-Path -Path $PWD -ChildPath out/modules/PSRule.Monitor) -Force;
-    $Null = Invoke-PSDocument -Name Azure -OutputPath .\docs\rules\en-US\ -Path .\RuleToc.Doc.ps1;
-    # $rules = Get-PSRule -Module 'PSRule.Monitor';
-    # $rules | ForEach-Object -Process {
-    #     Invoke-PSDocument -Path .\RuleHelp.Doc.ps1 -OutputPath .\docs\rules\en-US\ -InstanceName $_.Info.Name -inputObject $_;
-    # }
-}
-
 # Synopsis: Build help
 task BuildHelp BuildModule, PlatyPS, {
     # Generate MAML and about topics
-    # $Null = New-ExternalHelp -OutputPath out/docs/PSRule.Monitor -Path '.\docs\commands\PSRule.Monitor\en-US' -Force;
+    $Null = New-ExternalHelp -OutputPath out/docs/PSRule.Monitor -Path '.\docs\commands\PSRule.Monitor\en-US' -Force;
 
     # Copy generated help into module out path
-    # $Null = Copy-Item -Path out/docs/PSRule.Monitor/ -Destination out/modules/PSRule.Monitor/en-US/ -Recurse;
-    # $Null = Copy-Item -Path out/docs/PSRule.Monitor/ -Destination out/modules/PSRule.Monitor/en-AU/ -Recurse;
-    # $Null = Copy-Item -Path out/docs/PSRule.Monitor/ -Destination out/modules/PSRule.Monitor/en-GB/ -Recurse;
+    $Null = Copy-Item -Path out/docs/PSRule.Monitor/ -Destination out/modules/PSRule.Monitor/en-US/ -Recurse;
+    $Null = Copy-Item -Path out/docs/PSRule.Monitor/ -Destination out/modules/PSRule.Monitor/en-AU/ -Recurse;
+    $Null = Copy-Item -Path out/docs/PSRule.Monitor/ -Destination out/modules/PSRule.Monitor/en-GB/ -Recurse;
 }
 
-task ScaffoldHelp Build, BuildRuleDocs, {
+task ScaffoldHelp Build, {
     Import-Module (Join-Path -Path $PWD -ChildPath out/modules/PSRule.Monitor) -Force;
     Update-MarkdownHelp -Path '.\docs\commands\PSRule.Monitor\en-US';
 }

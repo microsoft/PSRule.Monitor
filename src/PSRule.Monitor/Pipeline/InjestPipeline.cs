@@ -22,7 +22,7 @@ namespace PSRule.Monitor.Pipeline
     {
         private string _WorkspaceId;
         private SecureString _SharedKey;
-        private string _LogName = "PSRuleTest";
+        private string _LogName = "PSRule";
 
         public void WorkspaceId(string workspaceId)
         {
