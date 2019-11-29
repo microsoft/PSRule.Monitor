@@ -6,7 +6,7 @@ using System;
 
 namespace PSRule.Monitor.Pipeline
 {
-    internal sealed class PipelineContext
+    internal sealed class PipelineContext : IDisposable
     {
         internal readonly PSRuleOption Option;
 

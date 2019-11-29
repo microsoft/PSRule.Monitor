@@ -3,6 +3,7 @@
 
 using PSRule.Monitor.Configuration;
 using System;
+using System.Diagnostics.CodeAnalysis;
 using System.Management.Automation;
 
 namespace PSRule.Monitor.Pipeline
@@ -23,6 +24,7 @@ namespace PSRule.Monitor.Pipeline
 
         void UseExecutionContext(EngineIntrinsics executionContext);
 
+        [SuppressMessage("Microsoft.Naming", "CA1716:IdentifiersShouldNotMatchKeywords")]
         IPipelineBuilder Configure(PSRuleOption option);
 
         IPipeline Build();
@@ -34,6 +36,7 @@ namespace PSRule.Monitor.Pipeline
 
         void Process(PSObject sourceObject);
 
+        [SuppressMessage("Microsoft.Naming", "CA1716:IdentifiersShouldNotMatchKeywords")]
         void End();
     }
 

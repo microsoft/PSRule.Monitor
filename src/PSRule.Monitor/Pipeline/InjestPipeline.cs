@@ -4,6 +4,8 @@
 using Newtonsoft.Json;
 using PSRule.Monitor.Data;
 using System;
+using System.Collections;
+using System.Globalization;
 using System.Management.Automation;
 using System.Net.Http;
 using System.Security;
@@ -43,6 +45,8 @@ namespace PSRule.Monitor.Pipeline
     internal sealed class InjestPipeline : PipelineBase
     {
         private const string ContentType = "application/json";
+        private const string TimeStampField = "";
+        private const string ResourceIdField = "resourceId";
 
         private const string HEADER_ACCEPT = "Accept";
         private const string HEADER_AUTHORIZATION = "Authorization";
@@ -51,12 +55,13 @@ namespace PSRule.Monitor.Pipeline
         private const string HEADER_RESOURCEID = "x-ms-AzureResourceId";
         private const string HEADER_TIMEGENERATED = "time-generated-field";
 
+        private static readonly CultureInfo FormatCulture = new CultureInfo("en-US");
+
         private readonly string _LogName;
         private readonly Uri _EndpointUri;
         private readonly CollectionHash _Hash;
         private readonly BatchQueue _SubmissionQueue;
-
-        static string TimeStampField = "";
+        private readonly HttpClient _HttpClient;
 
         internal InjestPipeline(PipelineContext context, PipelineReader reader, string workspaceId, SecureString sharedKey, string logName)
             : base(context, reader)
@@ -65,6 +70,7 @@ namespace PSRule.Monitor.Pipeline
             _EndpointUri = new Uri(string.Concat("https://", workspaceId, ".ods.opinsights.azure.com/api/logs?api-version=2016-04-01"));
             _Hash = new CollectionHash(workspaceId, sharedKey);
             _SubmissionQueue = new BatchQueue();
+            _HttpClient = GetClient();
         }
 
         public override void Process(PSObject sourceObject)
@@ -95,13 +101,15 @@ namespace PSRule.Monitor.Pipeline
             var targetName = GetProperty<string>(sourceObject, "targetName");
             var targetType = GetProperty<string>(sourceObject, "targetType");
             var outcome = GetProperty<string>(sourceObject, "outcome");
+            //var resourceId = GetProperty<Hashtable>(sourceObject, "properties")?.ContainsKey("resourceId") ?? string.Empty;
 
             var record = new LogRecord
             {
                 RuleName = ruleName,
                 TargetName = targetName,
                 TargetType = targetType,
-                Outcome = outcome
+                Outcome = outcome,
+                ResourceId = string.Empty
             };
             return record;
         }
@@ -122,17 +130,20 @@ namespace PSRule.Monitor.Pipeline
             var date = DateTime.UtcNow;
             var data = Encoding.UTF8.GetBytes(json);
             var signature = _Hash.ComputeSignature(data.Length, date, ContentType);
-            PostData(PrepareRequest(signature, date, json));
+            PostData(signature, date, json);
         }
 
         /// <summary>
         /// Post log data to Azure Monitor endpoint.
         /// </summary>
-        private void PostData(HttpRequestMessage request)
+        private void PostData(string signature, DateTime date, string json)
         {
-            var response = GetClient().SendAsync(request);
-            response.Wait();
-            var result = response.Result.Content.ReadAsStringAsync().Result;
+            using (var request = PrepareRequest(signature, date, json))
+            {
+                var response = _HttpClient.SendAsync(request);
+                response.Wait();
+                var result = response.Result.Content.ReadAsStringAsync().Result;
+            }
         }
 
         private HttpClient GetClient()
@@ -147,10 +158,24 @@ namespace PSRule.Monitor.Pipeline
         {
             var request = new HttpRequestMessage(HttpMethod.Post, _EndpointUri);
             request.Headers.Add(HEADER_AUTHORIZATION, signature);
-            request.Headers.Add(HEADER_DATE, date.ToString("r"));
+            request.Headers.Add(HEADER_DATE, date.ToString("r", FormatCulture));
             request.Headers.Add(HEADER_TIMEGENERATED, TimeStampField);
+            request.Headers.Add(HEADER_RESOURCEID, ResourceIdField);
             request.Content = new StringContent(json, Encoding.UTF8, ContentType);
             return request;
         }
+
+        #region IDisposable
+
+        protected override void Dispose(bool disposing)
+        {
+            if (disposing)
+            {
+                _Hash.Dispose();
+                _HttpClient.Dispose();
+            }
+        }
+
+        #endregion IDisposable
     }
 }
