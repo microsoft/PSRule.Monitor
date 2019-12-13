@@ -57,34 +57,34 @@ stages:
       displayName: 'Build module'
 
     # Run SonarCloud analysis
-    # - powershell: dotnet tool install --global dotnet-sonarscanner
-    #   displayName: 'Install Sonar scanner'
-    #   condition: and(ne(variables['Build.Reason'], 'PullRequest'), eq(variables['analysis'], 'true'))
+    - powershell: dotnet tool install --global dotnet-sonarscanner
+      displayName: 'Install Sonar scanner'
+      condition: and(ne(variables['Build.Reason'], 'PullRequest'), eq(variables['analysis'], 'true'))
 
-    # - script: dotnet sonarscanner begin /k:"BernieWhite_PSRule_Monitor" /o:"berniewhite-github" /d:sonar.host.url="https://sonarcloud.io" /d:sonar.login=$(sonarQubeToken) /v:"$(Build.BuildNumber)" /d:sonar.cs.vscoveragexml.reportsPaths="reports/" /d:sonar.cs.xunit.reportsPaths="reports/"
-    #   displayName: 'Prepare SonarCloud'
-    #   condition: and(ne(variables['Build.Reason'], 'PullRequest'), eq(variables['analysis'], 'true'))
+    - script: dotnet sonarscanner begin /k:"BernieWhite_PSRule_Monitor" /o:"berniewhite-github" /d:sonar.host.url="https://sonarcloud.io" /d:sonar.login=$(sonarQubeToken) /v:"$(Build.BuildNumber)" /d:sonar.cs.vscoveragexml.reportsPaths="reports/" /d:sonar.cs.xunit.reportsPaths="reports/"
+      displayName: 'Prepare SonarCloud'
+      condition: and(ne(variables['Build.Reason'], 'PullRequest'), eq(variables['analysis'], 'true'))
 
-    # - script: dotnet build
-    #   displayName: 'Build solution for analysis'
-    #   condition: and(ne(variables['Build.Reason'], 'PullRequest'), eq(variables['analysis'], 'true'))
+    - script: dotnet build
+      displayName: 'Build solution for analysis'
+      condition: and(ne(variables['Build.Reason'], 'PullRequest'), eq(variables['analysis'], 'true'))
 
-    # - script: dotnet sonarscanner end /d:sonar.login=$(sonarQubeToken)
-    #   displayName: 'Complete SonarCloud'
-    #   condition: and(ne(variables['Build.Reason'], 'PullRequest'), eq(variables['analysis'], 'true'))
+    - script: dotnet sonarscanner end /d:sonar.login=$(sonarQubeToken)
+      displayName: 'Complete SonarCloud'
+      condition: and(ne(variables['Build.Reason'], 'PullRequest'), eq(variables['analysis'], 'true'))
 
     # DotNet test results
-    - task: PublishTestResults@2
-      displayName: 'Publish unit test results'
-      inputs:
-        testRunTitle: 'DotNet on $(imageName)'
-        testRunner: VSTest
-        testResultsFiles: 'reports/*.trx'
-        mergeTestResults: true
-        platform: $(imageName)
-        configuration: $(buildConfiguration)
-        publishRunAttachments: true
-      condition: succeededOrFailed()
+    # - task: PublishTestResults@2
+    #   displayName: 'Publish unit test results'
+    #   inputs:
+    #     testRunTitle: 'DotNet on $(imageName)'
+    #     testRunner: VSTest
+    #     testResultsFiles: 'reports/*.trx'
+    #     mergeTestResults: true
+    #     platform: $(imageName)
+    #     configuration: $(buildConfiguration)
+    #     publishRunAttachments: true
+    #   condition: succeededOrFailed()
 
     # Pester test results
     - task: PublishTestResults@2
@@ -113,24 +113,24 @@ stages:
     #   condition: succeededOrFailed()
 
     # Generate Code Coverage report
-    # - task: Palmmedia.reportgenerator.reportgenerator-build-release-task.reportgenerator@4
-    #   displayName: 'Code coverage report generator'
-    #   inputs:
-    #     reports: 'reports\pester-coverage.xml'
-    #     targetdir: 'reports\coverage'
-    #     sourcedirs: 'src\PSRule.Monitor'
-    #     reporttypes: 'HtmlInline_AzurePipelines;Cobertura;Badges'
-    #     tag: $(Build.BuildNumber)
-    #   condition: eq(variables['coverage'], 'true')
+    - task: Palmmedia.reportgenerator.reportgenerator-build-release-task.reportgenerator@4
+      displayName: 'Code coverage report generator'
+      inputs:
+        reports: 'reports\pester-coverage.xml'
+        targetdir: 'reports\coverage'
+        sourcedirs: 'src\PSRule.Monitor'
+        reporttypes: 'HtmlInline_AzurePipelines;Cobertura;Badges'
+        tag: $(Build.BuildNumber)
+      condition: eq(variables['coverage'], 'true')
 
     # Publish Code Coverage report
-    # - task: PublishCodeCoverageResults@1
-    #   displayName: 'Publish Pester code coverage'
-    #   inputs:
-    #     codeCoverageTool: 'Cobertura'
-    #     summaryFileLocation: 'reports/coverage/Cobertura.xml'
-    #     reportDirectory: 'reports/coverage'
-    #   condition: eq(variables['coverage'], 'true')
+    - task: PublishCodeCoverageResults@1
+      displayName: 'Publish Pester code coverage'
+      inputs:
+        codeCoverageTool: 'Cobertura'
+        summaryFileLocation: 'reports/coverage/Cobertura.xml'
+        reportDirectory: 'reports/coverage'
+      condition: eq(variables['coverage'], 'true')
 
     # Generate artifacts
     - task: PublishPipelineArtifact@0
@@ -141,44 +141,44 @@ stages:
       condition: and(succeeded(), eq(variables['publish'], 'true'))
 
 # Release pipeline
-# - stage: Release
-#   displayName: Release
-#   dependsOn: Build
-#   condition: and(succeeded(), startsWith(variables['Build.SourceBranch'], 'refs/tags/v0.'))
-#   jobs:
-#   - job:
-#     displayName: Live
-#     pool:
-#       vmImage: 'ubuntu-16.04'
-#     variables:
-#       isPreRelease: $[contains(variables['Build.SourceBranchName'], '-B')]
-#     steps:
+- stage: Release
+  displayName: Release
+  dependsOn: Build
+  condition: and(succeeded(), startsWith(variables['Build.SourceBranch'], 'refs/tags/v0.'))
+  jobs:
+  - job:
+    displayName: Live
+    pool:
+      vmImage: 'ubuntu-latest'
+    variables:
+      isPreRelease: $[contains(variables['Build.SourceBranchName'], '-B')]
+    steps:
 
-#     # Download module from build
-#     - task: DownloadPipelineArtifact@1
-#       displayName: 'Download module'
-#       inputs:
-#         artifactName: PSRule.Monitor
-#         downloadPath: $(Build.SourcesDirectory)/out/modules/PSRule.Monitor
+    # Download module from build
+    - task: DownloadPipelineArtifact@1
+      displayName: 'Download module'
+      inputs:
+        artifactName: PSRule.Monitor
+        downloadPath: $(Build.SourcesDirectory)/out/modules/PSRule.Monitor
 
-#     # Install pipeline dependencies
-#     - powershell: ./.azure-pipelines/pipeline-deps.ps1
-#       displayName: 'Install dependencies'
+    # Install pipeline dependencies
+    - powershell: ./.azure-pipelines/pipeline-deps.ps1
+      displayName: 'Install dependencies'
 
-#     # Install pipeline dependencies and build module
-#     - powershell: Invoke-Build Release -ApiKey $(apiKey)
-#       displayName: 'Publish module'
+    # Install pipeline dependencies and build module
+    - powershell: Invoke-Build Release -ApiKey $(apiKey)
+      displayName: 'Publish module'
 
-#     # Update GitHub release
-#     - task: GitHubRelease@0
-#       displayName: 'GitHub release'
-#       inputs:
-#         gitHubConnection: 'AzureDevOps-PSRule.Monitor'
-#         repositoryName: '$(Build.Repository.Name)'
-#         action: edit
-#         tag: '$(Build.SourceBranchName)'
-#         releaseNotesSource: input
-#         releaseNotes: 'See [change log](https://github.com/BernieWhite/PSRule.Monitor/blob/master/CHANGELOG.md)'
-#         assetUploadMode: replace
-#         addChangeLog: false
-#         isPreRelease: $(isPreRelease)
+    # Update GitHub release
+    - task: GitHubRelease@0
+      displayName: 'GitHub release'
+      inputs:
+        gitHubConnection: 'AzureDevOps-PSRule.Monitor'
+        repositoryName: '$(Build.Repository.Name)'
+        action: edit
+        tag: '$(Build.SourceBranchName)'
+        releaseNotesSource: input
+        releaseNotes: 'See [change log](https://github.com/BernieWhite/PSRule.Monitor/blob/master/CHANGELOG.md)'
+        assetUploadMode: replace
+        addChangeLog: false
+        isPreRelease: $(isPreRelease)
