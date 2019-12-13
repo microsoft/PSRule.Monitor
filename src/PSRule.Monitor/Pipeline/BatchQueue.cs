@@ -40,13 +40,13 @@ namespace PSRule.Monitor.Pipeline
             if (_Queue.Count < minSize || _Queue.Count == 0)
                 return false;
 
+            string resourceId = _Queue.TryPeek(out LogRecord record) ? record.ResourceId : null;
             var batchSize = _Queue.Count > maxSize ? maxSize : _Queue.Count;
             var batch = new List<LogRecord>(batchSize);
-            for (var i = 0; i < maxSize && _Queue.Count > 0; i++)
-            {
-                if (_Queue.TryDequeue(out LogRecord record))
+            for (var i = 0; i < maxSize && _Queue.Count > 0 && _Queue.TryPeek(out record) && record.ResourceId == resourceId; i++)
+                if (_Queue.TryDequeue(out record))
                     batch.Add(record);
-            }
+
             records = batch.ToArray();
             return true;
         }

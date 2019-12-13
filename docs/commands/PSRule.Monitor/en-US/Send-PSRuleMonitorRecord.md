@@ -15,7 +15,7 @@ Send analysis results from PSRule to Azure Monitor.
 
 ```text
 Send-PSRuleMonitorRecord [-WorkspaceId] <String> [-SharedKey] <SecureString> [[-InputObject] <PSObject>]
- [<CommonParameters>]
+ [-LogName <String>] [<CommonParameters>]
 ```
 
 ## DESCRIPTION
@@ -82,6 +82,29 @@ Aliases:
 Required: True
 Position: 1
 Default value: None
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
+### -LogName
+
+Optionally specifies an alternative data source to store log data into.
+By default PSRule is used.
+
+If the log does not already exist, it is created.
+It can create up to 15 minutes to create the log initially.
+
+The specified log name will have the _CL suffix appended to it.
+For example, when the log name is PSRule the use PSRule_CL in log queries.
+
+```yaml
+Type: String
+Parameter Sets: (All)
+Aliases:
+
+Required: False
+Position: Named
+Default value: PSRule
 Accept pipeline input: False
 Accept wildcard characters: False
 ```
