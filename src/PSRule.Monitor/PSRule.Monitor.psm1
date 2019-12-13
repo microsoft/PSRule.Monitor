@@ -31,7 +31,11 @@ function Send-PSRuleMonitorRecord {
         [SecureString]$SharedKey,
 
         [Parameter(Mandatory = $False, ValueFromPipeline = $True)]
-        [PSObject]$InputObject
+        [PSObject]$InputObject,
+
+        [Parameter(Mandatory = $False)]
+        [PSDefaultValue(Value = 'PSRule')]
+        [String]$LogName
     )
     begin {
         Write-Verbose -Message '[Send-PSRuleMonitorRecord] BEGIN::';
@@ -40,6 +44,10 @@ function Send-PSRuleMonitorRecord {
         $builder = [PSRule.Monitor.Pipeline.PipelineBuilder]::Injest($Null);
         $builder.WorkspaceId($WorkspaceId);
         $builder.SharedKey($SharedKey);
+
+        if ($PSBoundParameters.ContainsKey('LogName')) {
+            $builder.LogName($LogName);
+        }
 
         $builder.UseCommandRuntime($PSCmdlet.CommandRuntime);
         $builder.UseExecutionContext($ExecutionContext);

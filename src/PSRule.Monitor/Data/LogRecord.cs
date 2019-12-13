@@ -1,6 +1,8 @@
 ﻿// Copyright (c) Microsoft Corporation.
 // Licensed under the MIT License.
 
+using Newtonsoft.Json;
+
 namespace PSRule.Monitor.Data
 {
     /// <summary>
@@ -16,6 +18,7 @@ namespace PSRule.Monitor.Data
 
         public string Outcome { get; set; }
 
+        [JsonIgnore]
         public string ResourceId { get; set; }
     }
 }

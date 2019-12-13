@@ -18,13 +18,17 @@ namespace PSRule.Monitor.Pipeline
         void WorkspaceId(string workspaceId);
 
         void SharedKey(SecureString sharedKey);
+
+        void LogName(string logName);
     }
 
     internal sealed class InjestPipelineBuilder : PipelineBuilderBase, IInjestPipelineBuilder
     {
+        private const string DEFAULT_LOGNAME = "PSRule";
+
         private string _WorkspaceId;
         private SecureString _SharedKey;
-        private string _LogName = "PSRule";
+        private string _LogName = DEFAULT_LOGNAME;
 
         public void WorkspaceId(string workspaceId)
         {
@@ -36,6 +40,11 @@ namespace PSRule.Monitor.Pipeline
             _SharedKey = sharedKey;
         }
 
+        public void LogName(string logName)
+        {
+            _LogName = logName;
+        }
+
         public override IPipeline Build()
         {
             return new InjestPipeline(PrepareContext(), PrepareReader(), _WorkspaceId, _SharedKey, _LogName);
@@ -44,9 +53,9 @@ namespace PSRule.Monitor.Pipeline
 
     internal sealed class InjestPipeline : PipelineBase
     {
-        private const string ContentType = "application/json";
-        private const string TimeStampField = "";
-        private const string ResourceIdField = "resourceId";
+        private const string CONTENTTYPE = "application/json";
+        private const string TIMESTAMPFIELD = "";
+        private const string APIVERSION = "2016-04-01";
 
         private const string HEADER_ACCEPT = "Accept";
         private const string HEADER_AUTHORIZATION = "Authorization";
@@ -67,7 +76,7 @@ namespace PSRule.Monitor.Pipeline
             : base(context, reader)
         {
             _LogName = logName;
-            _EndpointUri = new Uri(string.Concat("https://", workspaceId, ".ods.opinsights.azure.com/api/logs?api-version=2016-04-01"));
+            _EndpointUri = new Uri(string.Concat("https://", workspaceId, ".ods.opinsights.azure.com/api/logs?api-version=", APIVERSION));
             _Hash = new CollectionHash(workspaceId, sharedKey);
             _SubmissionQueue = new BatchQueue();
             _HttpClient = GetClient();
@@ -97,26 +106,57 @@ namespace PSRule.Monitor.Pipeline
             if (sourceObject == null)
                 return null;
 
-            var ruleName = GetProperty<string>(sourceObject, "ruleName");
-            var targetName = GetProperty<string>(sourceObject, "targetName");
-            var targetType = GetProperty<string>(sourceObject, "targetType");
-            var outcome = GetProperty<string>(sourceObject, "outcome");
-            //var resourceId = GetProperty<Hashtable>(sourceObject, "properties")?.ContainsKey("resourceId") ?? string.Empty;
-
+            var ruleName = GetPropertyValue(sourceObject, "ruleName");
+            var targetName = GetPropertyValue(sourceObject, "targetName");
+            var targetType = GetPropertyValue(sourceObject, "targetType");
+            var outcome = GetPropertyValue(sourceObject, "outcome");
+            var field = GetProperty<object>(sourceObject, "field");
+            var resourceId = GetField(field, "resourceId");
             var record = new LogRecord
             {
                 RuleName = ruleName,
                 TargetName = targetName,
                 TargetType = targetType,
                 Outcome = outcome,
-                ResourceId = string.Empty
+                ResourceId = resourceId
             };
             return record;
         }
 
+        private static string GetPropertyValue(PSObject obj, string propertyName)
+        {
+            return obj.Properties[propertyName] == null || obj.Properties[propertyName].Value == null ? null : obj.Properties[propertyName].Value.ToString();
+        }
+
         private static T GetProperty<T>(PSObject obj, string propertyName)
         {
-            return null == obj.Properties[propertyName] ? default(T) : (T)obj.Properties[propertyName].Value;
+            return obj.Properties[propertyName] == null ? default(T) : (T)obj.Properties[propertyName].Value;
+        }
+
+        private static string GetField(object obj, string propertyName)
+        {
+            if (obj is IDictionary dictionary && TryDictionary(dictionary, propertyName, out object value) && value != null)
+                return value.ToString();
+
+            if (obj is PSObject pso)
+                return GetPropertyValue(pso, propertyName);
+
+            return null;
+        }
+
+        private static bool TryDictionary(IDictionary dictionary, string key, out object value)
+        {
+            value = null;
+            var comparer = StringComparer.OrdinalIgnoreCase;
+            foreach (var k in dictionary.Keys)
+            {
+                if (comparer.Equals(key, k))
+                {
+                    value = dictionary[k];
+                    return true;
+                }
+            }
+            return false;
         }
 
         /// <summary>
@@ -125,20 +165,21 @@ namespace PSRule.Monitor.Pipeline
         private void SubmitBatch(LogRecord[] records)
         {
             var json = JsonConvert.SerializeObject(records);
+            var resourceId = records[0].ResourceId;
 
             // Create a hash for the API signature
             var date = DateTime.UtcNow;
             var data = Encoding.UTF8.GetBytes(json);
-            var signature = _Hash.ComputeSignature(data.Length, date, ContentType);
-            PostData(signature, date, json);
+            var signature = _Hash.ComputeSignature(data.Length, date, CONTENTTYPE);
+            PostData(signature, date, resourceId, json);
         }
 
         /// <summary>
         /// Post log data to Azure Monitor endpoint.
         /// </summary>
-        private void PostData(string signature, DateTime date, string json)
+        private void PostData(string signature, DateTime date, string resourceId, string json)
         {
-            using (var request = PrepareRequest(signature, date, json))
+            using (var request = PrepareRequest(signature, date, resourceId, json))
             {
                 var response = _HttpClient.SendAsync(request);
                 response.Wait();
@@ -149,19 +190,19 @@ namespace PSRule.Monitor.Pipeline
         private HttpClient GetClient()
         {
             var client = new HttpClient();
-            client.DefaultRequestHeaders.Add(HEADER_ACCEPT, ContentType);
+            client.DefaultRequestHeaders.Add(HEADER_ACCEPT, CONTENTTYPE);
             client.DefaultRequestHeaders.Add(HEADER_LOGTYPE, _LogName);
             return client;
         }
 
-        private HttpRequestMessage PrepareRequest(string signature, DateTime date, string json)
+        private HttpRequestMessage PrepareRequest(string signature, DateTime date, string resourceId, string json)
         {
             var request = new HttpRequestMessage(HttpMethod.Post, _EndpointUri);
             request.Headers.Add(HEADER_AUTHORIZATION, signature);
             request.Headers.Add(HEADER_DATE, date.ToString("r", FormatCulture));
-            request.Headers.Add(HEADER_TIMEGENERATED, TimeStampField);
-            request.Headers.Add(HEADER_RESOURCEID, ResourceIdField);
-            request.Content = new StringContent(json, Encoding.UTF8, ContentType);
+            request.Headers.Add(HEADER_TIMEGENERATED, TIMESTAMPFIELD);
+            request.Headers.Add(HEADER_RESOURCEID, resourceId);
+            request.Content = new StringContent(json, Encoding.UTF8, CONTENTTYPE);
             return request;
         }
 
