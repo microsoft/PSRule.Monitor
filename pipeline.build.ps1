@@ -241,9 +241,18 @@ task BuildHelp BuildModule, PlatyPS, {
     $Null = New-ExternalHelp -OutputPath out/docs/PSRule.Monitor -Path '.\docs\commands\PSRule.Monitor\en-US' -Force;
 
     # Copy generated help into module out path
-    $Null = Copy-Item -Path out/docs/PSRule.Monitor/ -Destination out/modules/PSRule.Monitor/en-US/ -Recurse;
-    $Null = Copy-Item -Path out/docs/PSRule.Monitor/ -Destination out/modules/PSRule.Monitor/en-AU/ -Recurse;
-    $Null = Copy-Item -Path out/docs/PSRule.Monitor/ -Destination out/modules/PSRule.Monitor/en-GB/ -Recurse;
+    if (!(Test-Path -Path out/modules/PSRule.Monitor/en-US/)) {
+        $Null = New-Item -Path out/modules/PSRule.Monitor/en-US -Force -ItemType Directory;
+    }
+    if (!(Test-Path -Path out/modules/PSRule.Monitor/en-AU/)) {
+        $Null = New-Item -Path out/modules/PSRule.Monitor/en-AU -Force -ItemType Directory;
+    }
+    if (!(Test-Path -Path out/modules/PSRule.Monitor/en-GB/)) {
+        $Null = New-Item -Path out/modules/PSRule.Monitor/en-GB -Force -ItemType Directory;
+    }
+    $Null = Copy-Item -Path out/docs/PSRule.Monitor/* -Destination out/modules/PSRule.Monitor/en-US/ -Recurse;
+    $Null = Copy-Item -Path out/docs/PSRule.Monitor/* -Destination out/modules/PSRule.Monitor/en-AU/ -Recurse;
+    $Null = Copy-Item -Path out/docs/PSRule.Monitor/* -Destination out/modules/PSRule.Monitor/en-GB/ -Recurse;
 }
 
 task ScaffoldHelp Build, {
