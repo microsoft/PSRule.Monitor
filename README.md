@@ -15,6 +15,16 @@ If you do not see your problem captured, please file a new issue and follow the 
 
 If you have any problems with the [PSRule][engine] engine, please check the project GitHub [issues](https://github.com/Microsoft/PSRule/issues) page instead.
 
+## Getting the modules
+
+This project requires the `PSRule` PowerShell module. For details on each see [install].
+
+You can download and install these modules from the PowerShell Gallery.
+
+Module             | Description | Downloads / instructions
+------             | ----------- | ------------------------
+PSRule.Monitor     | Log PSRule analysis results to Azure Monitor | [latest][module] / [instructions][install]
+
 ## Getting started
 
 ### Upload results
@@ -84,5 +94,7 @@ or contact [opencode@microsoft.com](mailto:opencode@microsoft.com) with any addi
 
 This project is [licensed under the MIT License](LICENSE).
 
+[install]: docs/scenarios/install-instructions.md
 [ci-badge]: https://dev.azure.com/bewhite/PSRule.Monitor/_apis/build/status/PSRule.Monitor-CI?branchName=master
-[module-psrule]: https://www.powershellgallery.com/packages/PSRule.Monitor
+[module]: https://www.powershellgallery.com/packages/PSRule.Monitor
+[engine]: https://github.com/Microsoft/PSRule
