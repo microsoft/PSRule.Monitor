@@ -7,7 +7,6 @@ using System.Net;
 using System.Security;
 using System.Security.Cryptography;
 using System.Text;
-using System.Threading;
 
 namespace PSRule.Monitor.Pipeline
 {
@@ -56,10 +55,7 @@ namespace PSRule.Monitor.Pipeline
         // This code added to correctly implement the disposable pattern.
         public void Dispose()
         {
-            // Do not change this code. Put cleanup code in Dispose(bool disposing) above.
             Dispose(true);
-            // TODO: uncomment the following line if the finalizer is overridden above.
-            // GC.SuppressFinalize(this);
         }
 
         #endregion IDisposable

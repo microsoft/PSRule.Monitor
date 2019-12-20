@@ -1,0 +1,23 @@
+
+info:
+  name: PSRule.Monitor
+  description: |
+    Log PSRule analysis results to Azure Monitor.
+  url: https://github.com/Microsoft/PSRule.Monitor
+
+repository:
+  type: git
+  url: https://github.com/Microsoft/PSRule.Monitor.git
+
+bugs:
+  url: https://github.com/Microsoft/PSRule.Monitor/issues
+
+tasks:
+  clear:
+    steps:
+      - gitPrune:
+          name: origin
+          removeGone: true
+  build:
+    steps:
+      - powershell: Invoke-Build Build

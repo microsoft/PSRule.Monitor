@@ -100,7 +100,7 @@ AliasesToExport = @()
 PrivateData = @{
     PSData = @{
         # Tags applied to this module. These help with module discovery in online galleries.
-        Tags = @('Azure')
+        Tags = @('Azure', 'PSRule')
 
         # A URL to the license for this module.
         LicenseUri = 'https://github.com/Microsoft/PSRule.Monitor/blob/master/LICENSE'
@@ -121,5 +121,4 @@ PrivateData = @{
 
 # Default prefix for commands exported from this module. Override the default prefix using Import-Module -Prefix.
 # DefaultCommandPrefix = ''
-
 }
