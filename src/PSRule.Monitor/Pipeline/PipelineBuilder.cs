@@ -51,12 +51,12 @@ namespace PSRule.Monitor.Pipeline
 
         public virtual void UseCommandRuntime(ICommandRuntime2 commandRuntime)
         {
-            //Logger.UseCommandRuntime(commandRuntime);
+            // Do nothing
         }
 
         public void UseExecutionContext(EngineIntrinsics executionContext)
         {
-            //Logger.UseExecutionContext(executionContext);
+            // Do nothing
         }
 
         public virtual IPipelineBuilder Configure(PSRuleOption option)
@@ -95,7 +95,7 @@ namespace PSRule.Monitor.Pipeline
 
         public virtual void Begin()
         {
-            // Reader.Open();
+            // Do nothing
         }
 
         public virtual void Process(PSObject sourceObject)
@@ -105,7 +105,7 @@ namespace PSRule.Monitor.Pipeline
 
         public virtual void End()
         {
-            //Writer.End();
+            // Do nothing
         }
 
         #endregion IPipeline

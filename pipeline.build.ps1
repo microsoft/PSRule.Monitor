@@ -179,8 +179,7 @@ task ModuleDependencies NuGet, PSRule, {
 task BuildDotNet {
     exec {
         # Build library
-        # Add build version -p:versionPrefix=$ModuleVersion
-        dotnet publish src/PSRule.Monitor -c $Configuration -f netstandard2.0 -o $(Join-Path -Path $PWD -ChildPath out/modules/PSRule.Monitor)
+        dotnet publish src/PSRule.Monitor -c $Configuration -f netstandard2.0 -o $(Join-Path -Path $PWD -ChildPath out/modules/PSRule.Monitor) -p:version=$Build
     }
 }
 
@@ -201,6 +200,9 @@ task TestDotNet {
 
 task CopyModule {
     CopyModuleFiles -Path src/PSRule.Monitor -DestinationPath out/modules/PSRule.Monitor;
+
+    # Copy third party notices
+    Copy-Item -Path ThirdPartyNotices.txt -Destination out/modules/PSRule.Monitor;
 }
 
 # Synopsis: Build modules only

@@ -30,10 +30,8 @@ namespace PSRule.Monitor.Configuration
             if (executionContext == null)
             {
                 _GetWorkingPath = () => Directory.GetCurrentDirectory();
-
                 return;
             }
-
             _GetWorkingPath = () => executionContext.SessionState.Path.CurrentFileSystemLocation.Path;
         }
 
