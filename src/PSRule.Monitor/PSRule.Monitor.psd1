@@ -31,7 +31,7 @@ Copyright = '(c) Microsoft Corporation. All rights reserved.'
 # Description of the functionality provided by this module
 Description = 'Log PSRule analysis results to Azure Monitor.
 
-This project is to be considered a proof-of-concept and not a supported product.'
+PSRule.Monitor is an open source project and not a supported product.'
 
 # Minimum version of the Windows PowerShell engine required by this module
 PowerShellVersion = '5.1'
@@ -52,9 +52,7 @@ DotNetFrameworkVersion = '4.7.2'
 # ProcessorArchitecture = ''
 
 # Modules that must be imported into the global environment prior to importing this module
-RequiredModules = @(
-    @{ ModuleName = 'PSRule'; ModuleVersion = '0.0.1' }
-)
+RequiredModules = @()
 
 # Assemblies that must be loaded prior to importing this module
 RequiredAssemblies = @(
@@ -100,7 +98,7 @@ AliasesToExport = @()
 PrivateData = @{
     PSData = @{
         # Tags applied to this module. These help with module discovery in online galleries.
-        Tags = @('Azure', 'PSRule')
+        Tags = @('Azure', 'Monitor', 'PSRule')
 
         # A URL to the license for this module.
         LicenseUri = 'https://github.com/Microsoft/PSRule.Monitor/blob/master/LICENSE'
