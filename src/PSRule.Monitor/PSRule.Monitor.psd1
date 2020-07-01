@@ -31,7 +31,7 @@ Copyright = '(c) Microsoft Corporation. All rights reserved.'
 # Description of the functionality provided by this module
 Description = 'Log PSRule analysis results to Azure Monitor.
 
-PSRule.Monitor is an open source project and not a supported product.'
+This project is open source and not a supported product.'
 
 # Minimum version of the Windows PowerShell engine required by this module
 PowerShellVersion = '5.1'
