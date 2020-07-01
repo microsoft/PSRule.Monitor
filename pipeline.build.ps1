@@ -16,7 +16,10 @@ param (
     [Switch]$CodeCoverage = $False,
 
     [Parameter(Mandatory = $False)]
-    [String]$ArtifactPath = (Join-Path -Path $PWD -ChildPath out/modules)
+    [String]$ArtifactPath = (Join-Path -Path $PWD -ChildPath out/modules),
+
+    [Parameter(Mandatory = $False)]
+    [String]$AssertStyle = 'AzurePipelines'
 )
 
 Write-Host -Object "[Pipeline] -- PWD: $PWD" -ForegroundColor Green;
@@ -78,6 +81,44 @@ function CopyModuleFiles {
 
             Copy-Item -Path $_.FullName -Destination $filePath -Force;
         };
+    }
+}
+
+function Get-RepoRuleData {
+    [CmdletBinding()]
+    param (
+        [Parameter(Position = 0, Mandatory = $False)]
+        [String]$Path = $PWD
+    )
+    process {
+        GetPathInfo -Path $Path -Verbose:$VerbosePreference;
+    }
+}
+
+function GetPathInfo {
+    [CmdletBinding()]
+    param (
+        [Parameter(Mandatory = $True)]
+        [String]$Path
+    )
+    begin {
+        $items = New-Object -TypeName System.Collections.ArrayList;
+    }
+    process {
+        $Null = $items.Add((Get-Item -Path $Path));
+        $files = @(Get-ChildItem -Path $Path -File -Recurse -Include *.ps1,*.psm1,*.psd1,*.cs | Where-Object {
+            !($_.FullName -like "*.Designer.cs") -and
+            !($_.FullName -like "*/bin/*") -and
+            !($_.FullName -like "*/obj/*") -and
+            !($_.FullName -like "*\obj\*") -and
+            !($_.FullName -like "*\bin\*") -and
+            !($_.FullName -like "*\out\*") -and
+            !($_.FullName -like "*/out/*")
+        });
+        $Null = $items.AddRange($files);
+    }
+    end {
+        $items;
     }
 }
 
@@ -150,8 +191,8 @@ task PSScriptAnalyzer NuGet, {
 
 # Synopsis: Install PSRule
 task PSRule NuGet, {
-    if ($Null -eq (Get-InstalledModule -Name PSRule -MinimumVersion 0.12.0 -ErrorAction Ignore)) {
-        Install-Module -Name PSRule -Repository PSGallery -MinimumVersion 0.12.0 -Scope CurrentUser -Force;
+    if ($Null -eq (Get-InstalledModule -Name PSRule -MinimumVersion 0.18.0 -ErrorAction Ignore)) {
+        Install-Module -Name PSRule -Repository PSGallery -MinimumVersion 0.18.0 -Scope CurrentUser -Force;
     }
     Import-Module -Name PSRule -Verbose:$False;
 }
@@ -230,6 +271,18 @@ task TestRules TestDotNet, PSRule, Pester, PSScriptAnalyzer, {
     elseif ($results.FailedCount -gt 0) {
         throw "$($results.FailedCount) tests failed.";
     }
+}
+
+# Synopsis: Run validation
+task Rules PSRule, {
+    $assertParams = @{
+        Path = './.ps-rule/'
+        Style = $AssertStyle
+        OutputFormat = 'NUnit3'
+        ErrorAction = 'Stop'
+    }
+    Get-RepoRuleData -Path $PWD |
+        Assert-PSRule @assertParams -OutputPath reports/ps-rule-file.xml;
 }
 
 # Synopsis: Run script analyzer
