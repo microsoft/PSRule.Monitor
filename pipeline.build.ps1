@@ -140,17 +140,6 @@ task VersionModule ModuleDependencies, {
             Update-ModuleManifest -Path $manifestPath -Prerelease $versionSuffix;
         }
     }
-
-    $manifest = Test-ModuleManifest -Path $manifestPath;
-    $requiredModules = $manifest.RequiredModules | ForEach-Object -Process {
-        if ($_.Name -eq 'PSRule' -and $Configuration -eq 'Release') {
-            @{ ModuleName = 'PSRule'; ModuleVersion = '0.12.0' }
-        }
-        else {
-            @{ ModuleName = $_.Name; ModuleVersion = $_.Version }
-        }
-    };
-    Update-ModuleManifest -Path $manifestPath -RequiredModules $requiredModules;
 }
 
 # Synopsis: Publish to PowerShell Gallery

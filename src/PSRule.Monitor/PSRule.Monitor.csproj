@@ -17,7 +17,7 @@
     <Copyright>Copyright (c) Microsoft Corporation. Licensed under the MIT License.</Copyright>
     <Description>Log PSRule analysis results to Azure Monitor.
 
-This project is to be considered a proof-of-concept and not a supported product.</Description>
+PSRule.Monitor is an open source project and not a supported product.</Description>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(OS)' == 'Windows_NT'">
