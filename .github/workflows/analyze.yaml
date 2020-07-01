@@ -3,7 +3,6 @@
 #
 name: Analyze
 on:
-- push
 - pull_request
 jobs:
   analyze:
