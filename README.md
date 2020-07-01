@@ -6,7 +6,7 @@ Log PSRule analysis results to Azure Monitor.
 
 ## Disclaimer
 
-PSRule.Monitor is an open source project and **not a supported product**.
+This project is open source and **not a supported product**.
 
 If you are experiencing problems, have a feature request, or a question, please check for an [issue] on GitHub.
 If you do not see your problem captured, please file a new issue, and follow the provided template.
