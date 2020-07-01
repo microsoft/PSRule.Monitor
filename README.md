@@ -4,14 +4,12 @@ Log PSRule analysis results to Azure Monitor.
 
 ![ci-badge]
 
-**More to come soon.**
-
 ## Disclaimer
 
-This project is to be considered a **proof-of-concept** and **not a supported product**.
+PSRule.Monitor is an open source project and **not a supported product**.
 
-If you have any problems please check our GitHub [issues](https://github.com/Microsoft/PSRule.Monitor/issues) page.
-If you do not see your problem captured, please file a new issue and follow the provided template.
+If you are experiencing problems, have a feature request, or a question, please check for an [issue] on GitHub.
+If you do not see your problem captured, please file a new issue, and follow the provided template.
 
 If you have any problems with the [PSRule][engine] engine, please check the project GitHub [issues](https://github.com/Microsoft/PSRule/issues) page instead.
 
@@ -23,7 +21,7 @@ You can download and install these modules from the PowerShell Gallery.
 
 Module             | Description | Downloads / instructions
 ------             | ----------- | ------------------------
-PSRule.Monitor     | Log PSRule analysis results to Azure Monitor | [latest][module] / [instructions][install]
+PSRule.Monitor     | Log PSRule analysis results to Azure Monitor. | [latest][module] / [instructions][install]
 
 ## Getting started
 
@@ -32,13 +30,13 @@ PSRule.Monitor     | Log PSRule analysis results to Azure Monitor | [latest][mod
 To upload results from PSRule to Azure Monitor, use the `Send-PSRuleMonitorRecord` cmdlet.
 Results can by piped directly from `Invoke-PSRule` or stored and piped from a variable.
 
-The `Send-PSRuleMonitorRecord` requires a Log Analytics workspace to send data to.
-The Id and key of the workspace can be specified by `-WorkspaceId` and `-SharedKey`.
+The `Send-PSRuleMonitorRecord` cmdlet requires a Log Analytics workspace to send data to.
+A workspace can be specified by using the `-WorkspaceId` and `-SharedKey` parameters.
 
 For example:
 
 ```powershell
-$data | Invoke-PSRule | Send-PSRuleMonitorRecord;
+$data | Invoke-PSRule | Send-PSRuleMonitorRecord -WorkspaceId <workspaceId> -SharedKey <primaryKey>;
 ```
 
 The following example shows using analysis results from a pre-built module:
@@ -50,11 +48,18 @@ $results | Send-PSRuleMonitorRecord -WorkspaceId <workspaceId> -SharedKey <prima
 
 ### Querying logs from Azure Monitor
 
-The following query reviews all rule records from the last hour that failed:
+By default, PSRule results are stored in the `PSRule_CL` table.
+The following query returns all rule records from the last hour that failed:
 
 ```text
 PSRule_CL
 | where Outcome_s == "Fail" and TimeGenerated > ago(1h)
+```
+
+To query these results from PowerShell use:
+
+```powershell
+Invoke-AzOperationalInsightsQuery -WorkspaceId <workspaceId> -Query 'PSRule_CL | where Outcome_s == "Fail" and TimeGenerated > ago(1h)'
 ```
 
 ## Language reference
@@ -98,3 +103,4 @@ This project is [licensed under the MIT License](LICENSE).
 [ci-badge]: https://dev.azure.com/bewhite/PSRule.Monitor/_apis/build/status/PSRule.Monitor-CI?branchName=master
 [module]: https://www.powershellgallery.com/packages/PSRule.Monitor
 [engine]: https://github.com/Microsoft/PSRule
+[issue]: https://github.com/Microsoft/PSRule.Monitor/issues
