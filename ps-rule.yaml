@@ -1,0 +1,5 @@
+# PSRule options for QA
+
+binding:
+  targetName:
+  - FullName
