@@ -72,6 +72,9 @@ namespace PSRule.Monitor.Pipeline
         private readonly BatchQueue _SubmissionQueue;
         private readonly HttpClient _HttpClient;
 
+        // Track whether Dispose has been called.
+        private bool _Disposed = false;
+
         internal InjestPipeline(PipelineContext context, PipelineReader reader, string workspaceId, SecureString sharedKey, string logName)
             : base(context, reader)
         {
@@ -210,11 +213,16 @@ namespace PSRule.Monitor.Pipeline
 
         protected override void Dispose(bool disposing)
         {
-            if (disposing)
+            if (!_Disposed)
             {
-                _Hash.Dispose();
-                _HttpClient.Dispose();
+                if (disposing)
+                {
+                    _Hash.Dispose();
+                    _HttpClient.Dispose();
+                }
+                _Disposed = true;
             }
+            base.Dispose(disposing);
         }
 
         #endregion IDisposable
