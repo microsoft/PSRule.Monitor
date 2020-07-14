@@ -100,7 +100,7 @@ or contact [opencode@microsoft.com](mailto:opencode@microsoft.com) with any addi
 This project is [licensed under the MIT License](LICENSE).
 
 [install]: docs/scenarios/install-instructions.md
-[ci-badge]: https://dev.azure.com/bewhite/PSRule.Monitor/_apis/build/status/PSRule.Monitor-CI?branchName=master
+[ci-badge]: https://dev.azure.com/bewhite/PSRule.Monitor/_apis/build/status/PSRule.Monitor-CI?branchName=main
 [module]: https://www.powershellgallery.com/packages/PSRule.Monitor
 [engine]: https://github.com/Microsoft/PSRule
 [issue]: https://github.com/Microsoft/PSRule.Monitor/issues

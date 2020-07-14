@@ -14,4 +14,4 @@ jobs:
       uses: actions/checkout@v2
 
     - name: Run PSRule analysis
-      uses: Microsoft/ps-rule@master
+      uses: Microsoft/ps-rule@main

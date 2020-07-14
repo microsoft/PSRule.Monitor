@@ -12,7 +12,7 @@
     <Authors>Bernie White</Authors>
     <AssemblyTitle>PSRule.Monitor</AssemblyTitle>
     <RepositoryUrl>https://github.com/Microsoft/PSRule.Monitor</RepositoryUrl>
-    <PackageLicenseExpression>https://github.com/Microsoft/PSRule.Monitor/blob/master/LICENSE</PackageLicenseExpression>
+    <PackageLicenseExpression>https://github.com/Microsoft/PSRule.Monitor/blob/main/LICENSE</PackageLicenseExpression>
     <Version>0.0.1</Version>
     <Copyright>Copyright (c) Microsoft Corporation. Licensed under the MIT License.</Copyright>
     <Description>Log PSRule analysis results to Azure Monitor.
