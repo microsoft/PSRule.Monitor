@@ -1,7 +1,7 @@
 ---
 external help file: PSRule.Monitor-help.xml
 Module Name: PSRule.Monitor
-online version: https://github.com/Microsoft/PSRule.Monitor/blob/master/docs/commands/PSRule.Monitor/en-US/Send-PSRuleMonitorRecord.md
+online version: https://github.com/Microsoft/PSRule.Monitor/blob/main/docs/commands/PSRule.Monitor/en-US/Send-PSRuleMonitorRecord.md
 schema: 2.0.0
 ---
 

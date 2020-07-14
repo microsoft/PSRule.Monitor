@@ -101,7 +101,7 @@ PrivateData = @{
         Tags = @('Azure', 'Monitor', 'PSRule')
 
         # A URL to the license for this module.
-        LicenseUri = 'https://github.com/Microsoft/PSRule.Monitor/blob/master/LICENSE'
+        LicenseUri = 'https://github.com/Microsoft/PSRule.Monitor/blob/main/LICENSE'
 
         # A URL to the main website for this project.
         ProjectUri = 'https://github.com/Microsoft/PSRule.Monitor'
@@ -110,7 +110,7 @@ PrivateData = @{
         # IconUri = ''
 
         # ReleaseNotes of this module
-        ReleaseNotes = 'https://github.com/Microsoft/PSRule.Monitor/blob/master/CHANGELOG.md'
+        ReleaseNotes = 'https://github.com/Microsoft/PSRule.Monitor/blob/main/CHANGELOG.md'
     } # End of PSData hashtable
 } # End of PrivateData hashtable
 
