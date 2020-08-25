@@ -11,7 +11,7 @@ namespace PSRule.Monitor.Pipeline
         internal readonly PSRuleOption Option;
 
         // Track whether Dispose has been called.
-        private bool _Disposed = false;
+        private bool _Disposed;
 
         public PipelineContext(PSRuleOption option)
         {

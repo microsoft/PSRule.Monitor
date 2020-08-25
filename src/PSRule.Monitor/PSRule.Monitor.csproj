@@ -8,7 +8,7 @@
     <NeutralLanguage>en-US</NeutralLanguage>
     <DebugSymbols>true</DebugSymbols>
     <GenerateAssemblyInfo>true</GenerateAssemblyInfo>
-    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+    <!-- <TreatWarningsAsErrors>true</TreatWarningsAsErrors> -->
     <Authors>Bernie White</Authors>
     <AssemblyTitle>PSRule.Monitor</AssemblyTitle>
     <RepositoryUrl>https://github.com/Microsoft/PSRule.Monitor</RepositoryUrl>

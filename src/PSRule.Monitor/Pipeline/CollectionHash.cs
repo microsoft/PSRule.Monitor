@@ -38,7 +38,7 @@ namespace PSRule.Monitor.Pipeline
 
         #region IDisposable
 
-        private bool _Disposed = false; // To detect redundant calls
+        private bool _Disposed; // To detect redundant calls
 
         void Dispose(bool disposing)
         {

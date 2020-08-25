@@ -83,7 +83,7 @@ namespace PSRule.Monitor.Pipeline
         protected readonly PipelineReader Reader;
 
         // Track whether Dispose has been called.
-        private bool _Disposed = false;
+        private bool _Disposed;
 
         protected PipelineBase(PipelineContext context, PipelineReader reader)
         {

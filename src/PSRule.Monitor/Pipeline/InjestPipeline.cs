@@ -73,7 +73,7 @@ namespace PSRule.Monitor.Pipeline
         private readonly HttpClient _HttpClient;
 
         // Track whether Dispose has been called.
-        private bool _Disposed = false;
+        private bool _Disposed;
 
         internal InjestPipeline(PipelineContext context, PipelineReader reader, string workspaceId, SecureString sharedKey, string logName)
             : base(context, reader)
