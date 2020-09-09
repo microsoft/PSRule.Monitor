@@ -8,7 +8,7 @@
     <NeutralLanguage>en-US</NeutralLanguage>
     <DebugSymbols>true</DebugSymbols>
     <GenerateAssemblyInfo>true</GenerateAssemblyInfo>
-    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+    <!-- <TreatWarningsAsErrors>true</TreatWarningsAsErrors> -->
     <Authors>Bernie White</Authors>
     <AssemblyTitle>PSRule.Monitor</AssemblyTitle>
     <RepositoryUrl>https://github.com/Microsoft/PSRule.Monitor</RepositoryUrl>
@@ -25,7 +25,7 @@ This project is open source and not a supported product.</Description>
   </PropertyGroup>
 
   <ItemGroup>
-  <PackageReference Include="Microsoft.CodeAnalysis.FxCopAnalyzers" Version="3.0.0">
+  <PackageReference Include="Microsoft.CodeAnalysis.FxCopAnalyzers" Version="3.3.0">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
