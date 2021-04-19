@@ -139,7 +139,7 @@ stages:
       name: ubuntu_18_04_coverage
       imageName: 'ubuntu-18.04'
       displayName: 'PowerShell coverage'
-      coverage: 'true'
+      coverage: 'false'
       publishResults: 'false'
 
   - template: jobs/test.yaml

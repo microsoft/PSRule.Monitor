@@ -243,7 +243,7 @@ task TestModule ModuleDependencies, Pester, PSScriptAnalyzer, {
 
     if ($CodeCoverage) {
         $pesterParams.Add('CodeCoverage', (Join-Path -Path $PWD -ChildPath 'out/modules/**/*.psm1'));
-        $pesterParams.Add('CodeCoverageOutputFile', (Join-Path -Path $PWD -ChildPath reports/pester-coverage.xml));
+        $pesterParams.Add('CodeCoverageOutputFile', (Join-Path -Path $PWD -ChildPath 'reports/pester-coverage.xml'));
     }
 
     if (!(Test-Path -Path reports)) {
@@ -335,4 +335,5 @@ task Test Build, Rules, TestDotNet, TestModule
 
 task Release ReleaseModule, TagBuild
 
-task . Build, Test
+# Synopsis: Build and test. Entry point for CI Build stage
+task . Build, Rules, TestDotNet
