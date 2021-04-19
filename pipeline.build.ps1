@@ -238,7 +238,7 @@ task CopyModule {
 # Synopsis: Build modules only
 task BuildModule BuildDotNet, CopyModule
 
-task TestModule TestDotNet, PSRule, Pester, PSScriptAnalyzer, {
+task TestModule ModuleDependencies, Pester, PSScriptAnalyzer, {
     # Run Pester tests
     $pesterParams = @{ Path = (Join-Path -Path $PWD -ChildPath tests/PSRule.Monitor.Tests); OutputFile = 'reports/pester-unit.xml'; OutputFormat = 'NUnitXml'; PesterOption = @{ IncludeVSCodeMarker = $True }; PassThru = $True; };
 
@@ -318,7 +318,7 @@ task Clean {
 
 task Build Clean, BuildModule, VersionModule, BuildHelp
 
-task Test Build, TestModule
+task Test Build, Rules, TestDotNet, TestModule
 
 task Release ReleaseModule, TagBuild
 
