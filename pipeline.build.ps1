@@ -180,16 +180,16 @@ task PSScriptAnalyzer NuGet, {
 
 # Synopsis: Install PSRule
 task PSRule NuGet, {
-    if ($Null -eq (Get-InstalledModule -Name PSRule -MinimumVersion 0.18.0 -ErrorAction Ignore)) {
-        Install-Module -Name PSRule -Repository PSGallery -MinimumVersion 0.18.0 -Scope CurrentUser -Force;
+    if ($Null -eq (Get-InstalledModule -Name PSRule -MinimumVersion 1.2.0 -ErrorAction Ignore)) {
+        Install-Module -Name PSRule -Repository PSGallery -MinimumVersion 1.2.0 -Scope CurrentUser -Force;
     }
     Import-Module -Name PSRule -Verbose:$False;
 }
 
 # Synopsis: Install PSDocs
 task PSDocs NuGet, {
-    if ($Null -eq (Get-InstalledModule -Name PSDocs -MinimumVersion 0.6.3 -ErrorAction Ignore)) {
-        Install-Module -Name PSDocs -Repository PSGallery -MinimumVersion 0.6.3 -Scope CurrentUser -Force;
+    if ($Null -eq (Get-InstalledModule -Name PSDocs -MinimumVersion 0.8.0 -ErrorAction Ignore)) {
+        Install-Module -Name PSDocs -Repository PSGallery -MinimumVersion 0.8.0 -Scope CurrentUser -Force;
     }
     Import-Module -Name PSDocs -Verbose:$False;
 }
@@ -199,7 +199,6 @@ task platyPS {
     if ($Null -eq (Get-InstalledModule -Name PlatyPS -MinimumVersion 0.14.0 -ErrorAction Ignore)) {
         Install-Module -Name PlatyPS -Scope CurrentUser -MinimumVersion 0.14.0 -Force;
     }
-    Import-Module -Name PlatyPS -Verbose:$False;
 }
 
 # Synopsis: Install module dependencies
@@ -217,13 +216,13 @@ task TestDotNet {
     if ($CodeCoverage) {
         exec {
             # Test library
-            # dotnet test --collect:"Code Coverage" --logger trx -r (Join-Path $PWD -ChildPath reports/) tests/PSRule.Monitor.Tests
+            dotnet test --collect:"Code Coverage" --logger trx -r (Join-Path $PWD -ChildPath reports/) tests/PSRule.Monitor.Tests
         }
     }
     else {
         exec {
             # Test library
-            # dotnet test --logger trx -r (Join-Path $PWD -ChildPath reports/) tests/PSRule.Monitor.Tests
+            dotnet test --logger trx -r (Join-Path $PWD -ChildPath reports/) tests/PSRule.Monitor.Tests
         }
     }
 }
@@ -238,13 +237,13 @@ task CopyModule {
 # Synopsis: Build modules only
 task BuildModule BuildDotNet, CopyModule
 
-task TestRules TestDotNet, PSRule, Pester, PSScriptAnalyzer, {
+task TestModule ModuleDependencies, Pester, PSScriptAnalyzer, {
     # Run Pester tests
     $pesterParams = @{ Path = (Join-Path -Path $PWD -ChildPath tests/PSRule.Monitor.Tests); OutputFile = 'reports/pester-unit.xml'; OutputFormat = 'NUnitXml'; PesterOption = @{ IncludeVSCodeMarker = $True }; PassThru = $True; };
 
     if ($CodeCoverage) {
         $pesterParams.Add('CodeCoverage', (Join-Path -Path $PWD -ChildPath 'out/modules/**/*.psm1'));
-        $pesterParams.Add('CodeCoverageOutputFile', (Join-Path -Path $PWD -ChildPath reports/pester-coverage.xml));
+        $pesterParams.Add('CodeCoverageOutputFile', (Join-Path -Path $PWD -ChildPath 'reports/pester-coverage.xml'));
     }
 
     if (!(Test-Path -Path reports)) {
@@ -281,8 +280,6 @@ task Analyze Build, PSScriptAnalyzer, {
 
 # Synopsis: Build help
 task BuildHelp BuildModule, PlatyPS, {
-    # Generate MAML and about topics
-    $Null = New-ExternalHelp -OutputPath out/docs/PSRule.Monitor -Path '.\docs\commands\PSRule.Monitor\en-US' -Force;
 
     # Copy generated help into module out path
     if (!(Test-Path -Path out/modules/PSRule.Monitor/en-US/)) {
@@ -294,9 +291,25 @@ task BuildHelp BuildModule, PlatyPS, {
     if (!(Test-Path -Path out/modules/PSRule.Monitor/en-GB/)) {
         $Null = New-Item -Path out/modules/PSRule.Monitor/en-GB -Force -ItemType Directory;
     }
-    $Null = Copy-Item -Path out/docs/PSRule.Monitor/* -Destination out/modules/PSRule.Monitor/en-US/ -Recurse;
-    $Null = Copy-Item -Path out/docs/PSRule.Monitor/* -Destination out/modules/PSRule.Monitor/en-AU/ -Recurse;
-    $Null = Copy-Item -Path out/docs/PSRule.Monitor/* -Destination out/modules/PSRule.Monitor/en-GB/ -Recurse;
+
+    # Avoid YamlDotNet issue in same app domain
+    exec {
+        $pwshPath = (Get-Process -Id $PID).Path;
+        &$pwshPath -Command {
+            # Generate MAML and about topics
+            Import-Module -Name PlatyPS -Verbose:$False;
+            $Null = New-ExternalHelp -OutputPath 'out/docs/PSRule.Monitor' -Path '.\docs\commands\PSRule.Monitor\en-US' -Force;
+
+             # Copy generated help into module out path
+            $Null = Copy-Item -Path out/docs/PSRule.Monitor/* -Destination out/modules/PSRule.Monitor/en-US/ -Recurse;
+            $Null = Copy-Item -Path out/docs/PSRule.Monitor/* -Destination out/modules/PSRule.Monitor/en-AU/ -Recurse;
+            $Null = Copy-Item -Path out/docs/PSRule.Monitor/* -Destination out/modules/PSRule.Monitor/en-GB/ -Recurse;
+        }
+    }
+
+    if (!(Test-Path -Path 'out/docs/PSRule.Monitor/PSRule.Monitor-help.xml')) {
+        throw 'Failed find generated cmdlet help.';
+    }
 }
 
 task ScaffoldHelp Build, {
@@ -318,8 +331,9 @@ task Clean {
 
 task Build Clean, BuildModule, VersionModule, BuildHelp
 
-task Test Build, TestRules
+task Test Build, Rules, TestDotNet, TestModule
 
 task Release ReleaseModule, TagBuild
 
-task . Build, Test
+# Synopsis: Build and test. Entry point for CI Build stage
+task . Build, Rules, TestDotNet
