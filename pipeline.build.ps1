@@ -281,8 +281,6 @@ task Analyze Build, PSScriptAnalyzer, {
 
 # Synopsis: Build help
 task BuildHelp BuildModule, PlatyPS, {
-    # Generate MAML and about topics
-    $Null = New-ExternalHelp -OutputPath out/docs/PSRule.Monitor -Path '.\docs\commands\PSRule.Monitor\en-US' -Force;
 
     # Copy generated help into module out path
     if (!(Test-Path -Path out/modules/PSRule.Monitor/en-US/)) {
@@ -294,9 +292,25 @@ task BuildHelp BuildModule, PlatyPS, {
     if (!(Test-Path -Path out/modules/PSRule.Monitor/en-GB/)) {
         $Null = New-Item -Path out/modules/PSRule.Monitor/en-GB -Force -ItemType Directory;
     }
-    $Null = Copy-Item -Path out/docs/PSRule.Monitor/* -Destination out/modules/PSRule.Monitor/en-US/ -Recurse;
-    $Null = Copy-Item -Path out/docs/PSRule.Monitor/* -Destination out/modules/PSRule.Monitor/en-AU/ -Recurse;
-    $Null = Copy-Item -Path out/docs/PSRule.Monitor/* -Destination out/modules/PSRule.Monitor/en-GB/ -Recurse;
+
+    # Avoid YamlDotNet issue in same app domain
+    exec {
+        $pwshPath = (Get-Process -Id $PID).Path;
+        &$pwshPath -Command {
+            # Generate MAML and about topics
+            Import-Module -Name PlatyPS -Verbose:$False;
+            $Null = New-ExternalHelp -OutputPath 'out/docs/PSRule.Monitor' -Path '.\docs\commands\PSRule.Monitor\en-US' -Force;
+
+             # Copy generated help into module out path
+            $Null = Copy-Item -Path out/docs/PSRule.Monitor/* -Destination out/modules/PSRule.Monitor/en-US/ -Recurse;
+            $Null = Copy-Item -Path out/docs/PSRule.Monitor/* -Destination out/modules/PSRule.Monitor/en-AU/ -Recurse;
+            $Null = Copy-Item -Path out/docs/PSRule.Monitor/* -Destination out/modules/PSRule.Monitor/en-GB/ -Recurse;
+        }
+    }
+
+    if (!(Test-Path -Path 'out/docs/PSRule.Monitor/PSRule.Monitor-help.xml')) {
+        throw 'Failed find generated cmdlet help.';
+    }
 }
 
 task ScaffoldHelp Build, {
