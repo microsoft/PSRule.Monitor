@@ -1,6 +1,7 @@
 ﻿// Copyright (c) Microsoft Corporation.
 // Licensed under the MIT License.
 
+using System.Collections;
 using Newtonsoft.Json;
 
 namespace PSRule.Monitor.Data
@@ -12,6 +13,10 @@ namespace PSRule.Monitor.Data
     {
         public string RuleName { get; set; }
 
+        public string DisplayName { get; set; }
+
+        public string ModuleName { get; set; }
+
         public string TargetName { get; set; }
 
         public string TargetType { get; set; }
@@ -20,5 +25,14 @@ namespace PSRule.Monitor.Data
 
         [JsonIgnore]
         public string ResourceId { get; set; }
+
+        [JsonConverter(typeof(StringifyMapConverter))]
+        public Hashtable Field { get; set; }
+
+        [JsonConverter(typeof(StringifyMapConverter))]
+        public Hashtable Data { get; set; }
+
+        [JsonConverter(typeof(StringifyMapConverter))]
+        public Hashtable Annotations { get; set; }
     }
 }

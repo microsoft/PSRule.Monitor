@@ -6,9 +6,7 @@
 #
 
 [CmdletBinding()]
-param (
-
-)
+param ()
 
 # Setup error handling
 $ErrorActionPreference = 'Stop';
@@ -54,7 +52,7 @@ Describe 'PSRule.Monitor' -Tag 'PowerShellGallery' {
     Context 'Static analysis' {
         It 'Has no quality errors' {
             $modulePath = (Join-Path -Path $rootPath -ChildPath out/modules/PSRule.Monitor);
-            $result = @(Invoke-ScriptAnalyzer -Path $modulePath -Verbose);
+            $result = @(Invoke-ScriptAnalyzer -Path $modulePath);
 
             $warningCount = ($result | Where-Object { $_.Severity -eq 'Warning' } | Measure-Object).Count;
             $errorCount = ($result | Where-Object { $_.Severity -eq 'Error' } | Measure-Object).Count;

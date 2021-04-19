@@ -5,9 +5,7 @@ using Newtonsoft.Json;
 using PSRule.Monitor.Data;
 using System;
 using System.Collections;
-using System.Globalization;
 using System.Management.Automation;
-using System.Net.Http;
 using System.Security;
 using System.Text;
 
@@ -47,42 +45,28 @@ namespace PSRule.Monitor.Pipeline
 
         public override IPipeline Build()
         {
-            return new InjestPipeline(PrepareContext(), PrepareReader(), _WorkspaceId, _SharedKey, _LogName);
+            var logClient = new LogClient(_WorkspaceId, _LogName);
+            return new InjestPipeline(PrepareContext(), PrepareReader(), _WorkspaceId, _SharedKey, logClient);
         }
     }
 
     internal sealed class InjestPipeline : PipelineBase
     {
         private const string CONTENTTYPE = "application/json";
-        private const string TIMESTAMPFIELD = "";
-        private const string APIVERSION = "2016-04-01";
 
-        private const string HEADER_ACCEPT = "Accept";
-        private const string HEADER_AUTHORIZATION = "Authorization";
-        private const string HEADER_LOGTYPE = "Log-Type";
-        private const string HEADER_DATE = "x-ms-date";
-        private const string HEADER_RESOURCEID = "x-ms-AzureResourceId";
-        private const string HEADER_TIMEGENERATED = "time-generated-field";
-
-        private static readonly CultureInfo FormatCulture = new CultureInfo("en-US");
-
-        private readonly string _LogName;
-        private readonly Uri _EndpointUri;
         private readonly CollectionHash _Hash;
         private readonly BatchQueue _SubmissionQueue;
-        private readonly HttpClient _HttpClient;
+        private readonly ILogClient _LogClient;
 
         // Track whether Dispose has been called.
         private bool _Disposed;
 
-        internal InjestPipeline(PipelineContext context, PipelineReader reader, string workspaceId, SecureString sharedKey, string logName)
+        internal InjestPipeline(PipelineContext context, PipelineReader reader, string workspaceId, SecureString sharedKey, ILogClient logClient)
             : base(context, reader)
         {
-            _LogName = logName;
-            _EndpointUri = new Uri(string.Concat("https://", workspaceId, ".ods.opinsights.azure.com/api/logs?api-version=", APIVERSION));
             _Hash = new CollectionHash(workspaceId, sharedKey);
             _SubmissionQueue = new BatchQueue();
-            _HttpClient = GetClient();
+            _LogClient = logClient;
         }
 
         public override void Process(PSObject sourceObject)
@@ -113,15 +97,23 @@ namespace PSRule.Monitor.Pipeline
             var targetName = GetPropertyValue(sourceObject, "targetName");
             var targetType = GetPropertyValue(sourceObject, "targetType");
             var outcome = GetPropertyValue(sourceObject, "outcome");
+            var data = GetProperty<object>(sourceObject, "data");
             var field = GetProperty<object>(sourceObject, "field");
-            var resourceId = GetField(field, "resourceId");
+            var info = GetProperty<object>(sourceObject, "info");
+            var resourceId = GetField(data, "resourceId") ?? GetField(field, "resourceId");
+            var displayName = GetField(info, "displayName") ?? ruleName;
+            var moduleName = GetField(info, "moduleName");
             var record = new LogRecord
             {
                 RuleName = ruleName,
+                DisplayName = displayName,
+                ModuleName = moduleName,
                 TargetName = targetName,
                 TargetType = targetType,
                 Outcome = outcome,
-                ResourceId = resourceId
+                ResourceId = resourceId,
+                Data = GetPropertyMap(data),
+                Field = GetPropertyMap(field),
             };
             return record;
         }
@@ -136,12 +128,34 @@ namespace PSRule.Monitor.Pipeline
             return obj.Properties[propertyName] == null ? default(T) : (T)obj.Properties[propertyName].Value;
         }
 
-        private static string GetField(object obj, string propertyName)
+        private static Hashtable GetPropertyMap(object o)
         {
-            if (obj is IDictionary dictionary && TryDictionary(dictionary, propertyName, out object value) && value != null)
+            if (o == null)
+                return null;
+
+            var result = new Hashtable();
+            if (o is IDictionary dictionary)
+            {
+                foreach (DictionaryEntry kv in dictionary)
+                    result[kv.Key] = kv.Value;
+            }
+            else if (o is PSObject pso)
+            {
+                foreach (var p in pso.Properties)
+                {
+                    if (p.MemberType == PSMemberTypes.NoteProperty)
+                        result[p.Name] = p.Value;
+                }
+            }
+            return result;
+        }
+
+        private static string GetField(object o, string propertyName)
+        {
+            if (o is IDictionary dictionary && TryDictionary(dictionary, propertyName, out object value) && value != null)
                 return value.ToString();
 
-            if (obj is PSObject pso)
+            if (o is PSObject pso)
                 return GetPropertyValue(pso, propertyName);
 
             return null;
@@ -182,31 +196,7 @@ namespace PSRule.Monitor.Pipeline
         /// </summary>
         private void PostData(string signature, DateTime date, string resourceId, string json)
         {
-            using (var request = PrepareRequest(signature, date, resourceId, json))
-            {
-                var response = _HttpClient.SendAsync(request);
-                response.Wait();
-                var result = response.Result.Content.ReadAsStringAsync().Result;
-            }
-        }
-
-        private HttpClient GetClient()
-        {
-            var client = new HttpClient();
-            client.DefaultRequestHeaders.Add(HEADER_ACCEPT, CONTENTTYPE);
-            client.DefaultRequestHeaders.Add(HEADER_LOGTYPE, _LogName);
-            return client;
-        }
-
-        private HttpRequestMessage PrepareRequest(string signature, DateTime date, string resourceId, string json)
-        {
-            var request = new HttpRequestMessage(HttpMethod.Post, _EndpointUri);
-            request.Headers.Add(HEADER_AUTHORIZATION, signature);
-            request.Headers.Add(HEADER_DATE, date.ToString("r", FormatCulture));
-            request.Headers.Add(HEADER_TIMEGENERATED, TIMESTAMPFIELD);
-            request.Headers.Add(HEADER_RESOURCEID, resourceId);
-            request.Content = new StringContent(json, Encoding.UTF8, CONTENTTYPE);
-            return request;
+            _LogClient.Post(signature, date, resourceId, json);
         }
 
         #region IDisposable
@@ -218,7 +208,7 @@ namespace PSRule.Monitor.Pipeline
                 if (disposing)
                 {
                     _Hash.Dispose();
-                    _HttpClient.Dispose();
+                    _LogClient.Dispose();
                 }
                 _Disposed = true;
             }

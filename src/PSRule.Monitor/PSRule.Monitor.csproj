@@ -4,6 +4,7 @@
     <TargetFramework>netstandard2.0</TargetFramework>
     <RootNamespace>PSRule.Monitor</RootNamespace>
     <OutputType>Library</OutputType>
+    <ProjectGuid>{bc87e736-4b87-48c2-ac35-3686c86c13a7}</ProjectGuid>
     <DebugType>portable</DebugType>
     <NeutralLanguage>en-US</NeutralLanguage>
     <DebugSymbols>true</DebugSymbols>
@@ -25,7 +26,7 @@ This project is open source and not a supported product.</Description>
   </PropertyGroup>
 
   <ItemGroup>
-  <PackageReference Include="Microsoft.CodeAnalysis.FxCopAnalyzers" Version="3.3.2">
+    <PackageReference Include="Microsoft.CodeAnalysis.NetAnalyzers" Version="5.0.3">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>

@@ -180,16 +180,16 @@ task PSScriptAnalyzer NuGet, {
 
 # Synopsis: Install PSRule
 task PSRule NuGet, {
-    if ($Null -eq (Get-InstalledModule -Name PSRule -MinimumVersion 0.18.0 -ErrorAction Ignore)) {
-        Install-Module -Name PSRule -Repository PSGallery -MinimumVersion 0.18.0 -Scope CurrentUser -Force;
+    if ($Null -eq (Get-InstalledModule -Name PSRule -MinimumVersion 1.2.0 -ErrorAction Ignore)) {
+        Install-Module -Name PSRule -Repository PSGallery -MinimumVersion 1.2.0 -Scope CurrentUser -Force;
     }
     Import-Module -Name PSRule -Verbose:$False;
 }
 
 # Synopsis: Install PSDocs
 task PSDocs NuGet, {
-    if ($Null -eq (Get-InstalledModule -Name PSDocs -MinimumVersion 0.6.3 -ErrorAction Ignore)) {
-        Install-Module -Name PSDocs -Repository PSGallery -MinimumVersion 0.6.3 -Scope CurrentUser -Force;
+    if ($Null -eq (Get-InstalledModule -Name PSDocs -MinimumVersion 0.8.0 -ErrorAction Ignore)) {
+        Install-Module -Name PSDocs -Repository PSGallery -MinimumVersion 0.8.0 -Scope CurrentUser -Force;
     }
     Import-Module -Name PSDocs -Verbose:$False;
 }
@@ -217,13 +217,13 @@ task TestDotNet {
     if ($CodeCoverage) {
         exec {
             # Test library
-            # dotnet test --collect:"Code Coverage" --logger trx -r (Join-Path $PWD -ChildPath reports/) tests/PSRule.Monitor.Tests
+            dotnet test --collect:"Code Coverage" --logger trx -r (Join-Path $PWD -ChildPath reports/) tests/PSRule.Monitor.Tests
         }
     }
     else {
         exec {
             # Test library
-            # dotnet test --logger trx -r (Join-Path $PWD -ChildPath reports/) tests/PSRule.Monitor.Tests
+            dotnet test --logger trx -r (Join-Path $PWD -ChildPath reports/) tests/PSRule.Monitor.Tests
         }
     }
 }
