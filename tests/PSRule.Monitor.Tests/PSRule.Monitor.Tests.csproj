@@ -1,11 +1,12 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>net5.0</TargetFramework>
-
+    <TargetFramework>netcoreapp3.1</TargetFramework>
+    <ProjectGuid>{22bf9268-67e2-4c43-b254-1c43262cddcc}</ProjectGuid>
+    <IsTestProject>true</IsTestProject>
     <IsPackable>false</IsPackable>
-
     <RootNamespace>PSRule.Monitor</RootNamespace>
+    <DebugType>Full</DebugType>
   </PropertyGroup>
 
   <ItemGroup>
