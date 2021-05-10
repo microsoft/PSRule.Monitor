@@ -4,14 +4,17 @@ Log PSRule analysis results to Azure Monitor.
 
 ![ci-badge]
 
-## Disclaimer
+## Support
 
-This project is open source and **not a supported product**.
+This project uses GitHub Issues to track bugs and feature requests.
+Please search the existing issues before filing new issues to avoid duplicates.
 
-If you are experiencing problems, have a feature request, or a question, please check for an [issue] on GitHub.
-If you do not see your problem captured, please file a new issue, and follow the provided template.
+- For new issues, file your bug or feature request as a new [issue].
+- For help, discussion, and support questions about using this project, join or start a [discussion].
 
 If you have any problems with the [PSRule][engine] engine, please check the project GitHub [issues](https://github.com/Microsoft/PSRule/issues) page instead.
+
+Support for this project/ product is limited to the resources listed above.
 
 ## Getting the modules
 
@@ -104,3 +107,4 @@ This project is [licensed under the MIT License](LICENSE).
 [module]: https://www.powershellgallery.com/packages/PSRule.Monitor
 [engine]: https://github.com/Microsoft/PSRule
 [issue]: https://github.com/Microsoft/PSRule.Monitor/issues
+[discussion]: https://github.com/microsoft/PSRule.Monitor/discussions

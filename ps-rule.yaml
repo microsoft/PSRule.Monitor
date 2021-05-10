@@ -1,5 +1,11 @@
 # PSRule options for QA
 
-binding:
-  targetName:
-  - FullName
+input:
+  pathIgnore:
+  - '.vscode/'
+  - '*.md'
+  - '*.Designer.cs'
+
+output:
+  culture:
+  - 'en'
