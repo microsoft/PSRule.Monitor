@@ -6,4 +6,3 @@ out/
 **/obj/
 *.user
 *.diagsession
-src/**/*.Designer.cs
