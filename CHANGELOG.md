@@ -2,12 +2,14 @@
 
 ## Unreleased
 
+## v0.3.0-B2108008 (pre-release)
+
 What's changed since v0.2.0:
 
 - New features:
   - Added support for passing through rule annotations. [#29](https://github.com/microsoft/PSRule.Monitor/issues/29)
   - Added convention to support ingestion in a pipeline. [#46](https://github.com/microsoft/PSRule.Monitor/issues/46)
-    - To use this feature include the `Monitor.LogAnalytics.Import` convention.
+    - To use this feature, include the `Monitor.LogAnalytics.Import` convention.
 - General improvements:
   - Ignore null or empty field and data properties. [#44](https://github.com/microsoft/PSRule.Monitor/issues/44)
   - Added `CorrelationId` to ingested events. [#45](https://github.com/microsoft/PSRule.Monitor/issues/44)
