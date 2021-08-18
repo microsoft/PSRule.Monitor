@@ -1,13 +1,10 @@
 ﻿// Copyright (c) Microsoft Corporation.
 // Licensed under the MIT License.
 
-using Newtonsoft.Json;
-using PSRule.Monitor.Data;
-using System;
-using System.Collections;
+using PSRule.Monitor.Resources;
 using System.Management.Automation;
 using System.Security;
-using System.Text;
+using System.Threading;
 
 namespace PSRule.Monitor.Pipeline
 {
@@ -30,11 +27,17 @@ namespace PSRule.Monitor.Pipeline
 
         public void WorkspaceId(string workspaceId)
         {
+            if (string.IsNullOrEmpty(workspaceId))
+                throw new PipelineBuilderException(string.Format(Thread.CurrentThread.CurrentCulture, PSRuleResources.InvalidWorkspaceId));
+
             _WorkspaceId = workspaceId;
         }
 
         public void SharedKey(SecureString sharedKey)
         {
+            if (sharedKey == null)
+                throw new PipelineBuilderException(string.Format(Thread.CurrentThread.CurrentCulture, PSRuleResources.InvalidSharedKey));
+
             _SharedKey = sharedKey;
         }
 
@@ -52,11 +55,7 @@ namespace PSRule.Monitor.Pipeline
 
     internal sealed class InjestPipeline : PipelineBase
     {
-        private const string CONTENTTYPE = "application/json";
-
-        private readonly CollectionHash _Hash;
-        private readonly BatchQueue _SubmissionQueue;
-        private readonly ILogClient _LogClient;
+        private readonly WorkspaceClient _WorkspaceClient;
 
         // Track whether Dispose has been called.
         private bool _Disposed;
@@ -64,139 +63,21 @@ namespace PSRule.Monitor.Pipeline
         internal InjestPipeline(PipelineContext context, PipelineReader reader, string workspaceId, SecureString sharedKey, ILogClient logClient)
             : base(context, reader)
         {
-            _Hash = new CollectionHash(workspaceId, sharedKey);
-            _SubmissionQueue = new BatchQueue();
-            _LogClient = logClient;
+            _WorkspaceClient = new WorkspaceClient(workspaceId, sharedKey, logClient);
         }
 
         public override void Process(PSObject sourceObject)
         {
             Reader.Enqueue(sourceObject);
             while (Reader.TryDequeue(out PSObject next))
-                _SubmissionQueue.Enqueue(ProcessResult(next));
+                _WorkspaceClient.Enqueue(next);
 
-            while (_SubmissionQueue.TryDequeue(30, 100, out LogRecord[] records))
-                SubmitBatch(records);
+            _WorkspaceClient.Send(30, 100);
         }
 
         public override void End()
         {
-            while (_SubmissionQueue.TryDequeue(0, 100, out LogRecord[] records))
-                SubmitBatch(records);
-        }
-
-        /// <summary>
-        /// Maps a RuleRecord to a LogRecord.
-        /// </summary>
-        private static LogRecord ProcessResult(PSObject sourceObject)
-        {
-            if (sourceObject == null)
-                return null;
-
-            var ruleName = GetPropertyValue(sourceObject, "ruleName");
-            var targetName = GetPropertyValue(sourceObject, "targetName");
-            var targetType = GetPropertyValue(sourceObject, "targetType");
-            var outcome = GetPropertyValue(sourceObject, "outcome");
-            var data = GetProperty<object>(sourceObject, "data");
-            var field = GetProperty<object>(sourceObject, "field");
-            var info = GetProperty<object>(sourceObject, "info");
-            var resourceId = GetField(data, "resourceId") ?? GetField(field, "resourceId");
-            var displayName = GetField(info, "displayName") ?? ruleName;
-            var moduleName = GetField(info, "moduleName");
-            var record = new LogRecord
-            {
-                RuleName = ruleName,
-                DisplayName = displayName,
-                ModuleName = moduleName,
-                TargetName = targetName,
-                TargetType = targetType,
-                Outcome = outcome,
-                ResourceId = resourceId,
-                Data = GetPropertyMap(data),
-                Field = GetPropertyMap(field),
-            };
-            return record;
-        }
-
-        private static string GetPropertyValue(PSObject obj, string propertyName)
-        {
-            return obj.Properties[propertyName] == null || obj.Properties[propertyName].Value == null ? null : obj.Properties[propertyName].Value.ToString();
-        }
-
-        private static T GetProperty<T>(PSObject obj, string propertyName)
-        {
-            return obj.Properties[propertyName] == null ? default(T) : (T)obj.Properties[propertyName].Value;
-        }
-
-        private static Hashtable GetPropertyMap(object o)
-        {
-            if (o == null)
-                return null;
-
-            var result = new Hashtable();
-            if (o is IDictionary dictionary)
-            {
-                foreach (DictionaryEntry kv in dictionary)
-                    result[kv.Key] = kv.Value;
-            }
-            else if (o is PSObject pso)
-            {
-                foreach (var p in pso.Properties)
-                {
-                    if (p.MemberType == PSMemberTypes.NoteProperty)
-                        result[p.Name] = p.Value;
-                }
-            }
-            return result;
-        }
-
-        private static string GetField(object o, string propertyName)
-        {
-            if (o is IDictionary dictionary && TryDictionary(dictionary, propertyName, out object value) && value != null)
-                return value.ToString();
-
-            if (o is PSObject pso)
-                return GetPropertyValue(pso, propertyName);
-
-            return null;
-        }
-
-        private static bool TryDictionary(IDictionary dictionary, string key, out object value)
-        {
-            value = null;
-            var comparer = StringComparer.OrdinalIgnoreCase;
-            foreach (var k in dictionary.Keys)
-            {
-                if (comparer.Equals(key, k))
-                {
-                    value = dictionary[k];
-                    return true;
-                }
-            }
-            return false;
-        }
-
-        /// <summary>
-        /// Submits a batch of records to Azure Monitor data collector.
-        /// </summary>
-        private void SubmitBatch(LogRecord[] records)
-        {
-            var json = JsonConvert.SerializeObject(records);
-            var resourceId = records[0].ResourceId;
-
-            // Create a hash for the API signature
-            var date = DateTime.UtcNow;
-            var data = Encoding.UTF8.GetBytes(json);
-            var signature = _Hash.ComputeSignature(data.Length, date, CONTENTTYPE);
-            PostData(signature, date, resourceId, json);
-        }
-
-        /// <summary>
-        /// Post log data to Azure Monitor endpoint.
-        /// </summary>
-        private void PostData(string signature, DateTime date, string resourceId, string json)
-        {
-            _LogClient.Post(signature, date, resourceId, json);
+            _WorkspaceClient.Send();
         }
 
         #region IDisposable
@@ -206,10 +87,8 @@ namespace PSRule.Monitor.Pipeline
             if (!_Disposed)
             {
                 if (disposing)
-                {
-                    _Hash.Dispose();
-                    _LogClient.Dispose();
-                }
+                    _WorkspaceClient.Dispose();
+
                 _Disposed = true;
             }
             base.Dispose(disposing);

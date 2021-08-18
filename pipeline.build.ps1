@@ -68,7 +68,7 @@ function CopyModuleFiles {
     process {
         $sourcePath = Resolve-Path -Path $Path;
 
-        Get-ChildItem -Path $sourcePath -Recurse -File -Include *.ps1,*.psm1,*.psd1,*.ps1xml | Where-Object -FilterScript {
+        Get-ChildItem -Path $sourcePath -Recurse -File -Include *.ps1,*.psm1,*.psd1,*.ps1xml,*.yaml | Where-Object -FilterScript {
             ($_.FullName -notmatch '(\.(cs|csproj)|(\\|\/)(obj|bin))')
         } | ForEach-Object -Process {
             $filePath = $_.FullName.Replace($sourcePath, $destinationPath);
@@ -102,6 +102,17 @@ task VersionModule ModuleDependencies, {
             Update-ModuleManifest -Path $manifestPath -Prerelease $versionSuffix;
         }
     }
+
+    $manifest = Test-ModuleManifest -Path $manifestPath;
+    $requiredModules = $manifest.RequiredModules | ForEach-Object -Process {
+        if ($_.Name -eq 'PSRule' -and $Configuration -eq 'Release') {
+            @{ ModuleName = 'PSRule'; ModuleVersion = '1.6.0' }
+        }
+        else {
+            @{ ModuleName = $_.Name; ModuleVersion = $_.Version }
+        }
+    };
+    Update-ModuleManifest -Path $manifestPath -RequiredModules $requiredModules;
 }
 
 # Synopsis: Publish to PowerShell Gallery
@@ -142,8 +153,8 @@ task PSScriptAnalyzer NuGet, {
 
 # Synopsis: Install PSRule
 task PSRule NuGet, {
-    if ($Null -eq (Get-InstalledModule -Name PSRule -MinimumVersion 1.3.0 -ErrorAction Ignore)) {
-        Install-Module -Name PSRule -Repository PSGallery -MinimumVersion 1.3.0 -Scope CurrentUser -Force;
+    if ($Null -eq (Get-InstalledModule -Name PSRule -MinimumVersion 1.6.0 -ErrorAction Ignore)) {
+        Install-Module -Name PSRule -Repository PSGallery -MinimumVersion 1.6.0 -Scope CurrentUser -Force;
     }
     if ($Null -eq (Get-InstalledModule -Name PSRule.Rules.MSFT.OSS -MinimumVersion 0.1.0 -ErrorAction Ignore)) {
         Install-Module -Name PSRule.Rules.MSFT.OSS -Repository PSGallery -MinimumVersion 0.1.0 -Scope CurrentUser -Force;

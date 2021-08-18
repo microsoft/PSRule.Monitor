@@ -44,7 +44,7 @@ This project uses GitHub Issues to track bugs and feature requests. See GitHub p
 
   <ItemGroup>
     <EmbeddedResource Update="Resources\PSRuleResources.resx">
-      <Generator>ResXFileCodeGenerator</Generator>
+      <Generator>PublicResXFileCodeGenerator</Generator>
       <LastGenOutput>PSRuleResources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
   </ItemGroup>

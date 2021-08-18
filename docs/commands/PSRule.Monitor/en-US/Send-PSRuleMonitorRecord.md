@@ -14,7 +14,7 @@ Send analysis results from PSRule to Azure Monitor.
 ## SYNTAX
 
 ```text
-Send-PSRuleMonitorRecord [-WorkspaceId] <String> [-SharedKey] <SecureString> [[-InputObject] <PSObject>]
+Send-PSRuleMonitorRecord [[-WorkspaceId] <String>] [[-SharedKey] <SecureString>] [[-InputObject] <PSObject>]
  [-LogName <String>] [<CommonParameters>]
 ```
 
@@ -57,13 +57,14 @@ Send results from a variable to Azure Monitor.
 ### -WorkspaceId
 
 The unique identifier of a Azure Monitor Log Analytics workspace.
+If not specified, the `PSRULE_CONFIGURATION_MONITOR_WORKSPACE_ID` environment variable is used.
 
 ```yaml
 Type: String
 Parameter Sets: (All)
 Aliases:
 
-Required: True
+Required: False
 Position: 0
 Default value: None
 Accept pipeline input: False
@@ -73,13 +74,14 @@ Accept wildcard characters: False
 ### -SharedKey
 
 Either the primary or secondary key for the workspace.
+If not specified, the `PSRULE_CONFIGURATION_MONITOR_WORKSPACE_KEY` environment variable is used.
 
 ```yaml
 Type: SecureString
 Parameter Sets: (All)
 Aliases:
 
-Required: True
+Required: False
 Position: 1
 Default value: None
 Accept pipeline input: False
