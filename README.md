@@ -28,7 +28,66 @@ PSRule.Monitor     | Log PSRule analysis results to Azure Monitor. | [latest][mo
 
 ## Getting started
 
-### Upload results
+### Upload results with PSRule convention
+
+A convention can be used to upload the results of a PSRule analysis to Azure Monitor.
+To use the convention:
+
+- Install the `PSRule.Monitor` module from the PowerShell Gallery.
+- Include the `PSRule.Monitor` module.
+  This can be set in PSRule options or specified at runtime as a parameter.
+- Reference `Monitor.LogAnalytics.Import` convention.
+  This can be set in PSRule options or specified at runtime as a parameter.
+
+For example:
+
+```yaml
+include:
+  module:
+  - 'PSRule.Monitor'
+
+convention:
+  include:
+  - 'Monitor.LogAnalytics.Import
+```
+
+When using the convention a Log Analytics workspace must be specified.
+This can be done by setting the following environment variables:
+
+- `PSRULE_CONFIGURATION_MONITOR_WORKSPACE_ID` - Containing the Log Analytics workspace ID.
+- `PSRULE_CONFIGURATION_MONITOR_WORKSPACE_KEY` - Containing either the primary or secondary key to the workspace.
+  This value is sensitive and should be stored securely.
+  To protect this value, avoid storing it in source control.
+
+For example:
+
+```powershell
+# PowerShell: Setting environment variable
+$Env:PSRULE_CONFIGURATION_MONITOR_WORKSPACE_ID = '00000000-0000-0000-0000-000000000000'
+$Env:PSRULE_CONFIGURATION_MONITOR_WORKSPACE_KEY = Get-Secret -Name 'WORKSPACE_KEY' -AsPlainText
+```
+
+```yaml
+# GitHub Actions: Setting environment variable with microsoft/ps-rule action
+- name: Run PSRule analysis
+  uses: microsoft/ps-rule@main
+  env:
+    PSRULE_CONFIGURATION_MONITOR_WORKSPACE_ID: 00000000-0000-0000-0000-000000000000
+    PSRULE_CONFIGURATION_MONITOR_WORKSPACE_KEY: ${{ secrets.WORKSPACE_KEY }}
+```
+
+```yaml
+# Azure Pipelines: Setting environment variable with ps-rule-assert task
+- task: ps-rule-assert@0
+  displayName: Run PSRule analysis
+  inputs:
+    inputType: repository
+  env:
+    PSRULE_CONFIGURATION_MONITOR_WORKSPACE_ID: 00000000-0000-0000-0000-000000000000
+    PSRULE_CONFIGURATION_MONITOR_WORKSPACE_KEY: $(WORKSPACE_KEY)
+```
+
+### Upload results with PowerShell
 
 To upload results from PSRule to Azure Monitor, use the `Send-PSRuleMonitorRecord` cmdlet.
 Results can by piped directly from `Invoke-PSRule` or stored and piped from a variable.

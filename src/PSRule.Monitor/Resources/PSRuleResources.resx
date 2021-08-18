@@ -117,4 +117,10 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <data name="InvalidSharedKey" xml:space="preserve">
+    <value>A shared key for the workspace must be specified.</value>
+  </data>
+  <data name="InvalidWorkspaceId" xml:space="preserve">
+    <value>A workspace id must be specified.</value>
+  </data>
 </root>

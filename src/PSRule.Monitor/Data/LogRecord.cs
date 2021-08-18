@@ -1,8 +1,9 @@
 ﻿// Copyright (c) Microsoft Corporation.
 // Licensed under the MIT License.
 
-using System.Collections;
 using Newtonsoft.Json;
+using System;
+using System.Collections;
 
 namespace PSRule.Monitor.Data
 {
@@ -11,6 +12,8 @@ namespace PSRule.Monitor.Data
     /// </summary>
     internal sealed class LogRecord
     {
+        public string RuleId { get; set; }
+
         public string RuleName { get; set; }
 
         public string DisplayName { get; set; }
@@ -34,5 +37,9 @@ namespace PSRule.Monitor.Data
 
         [JsonConverter(typeof(StringifyMapConverter))]
         public Hashtable Annotations { get; set; }
+
+        public string RunId { get; set; }
+
+        public Guid CorrelationId { get; set; }
     }
 }

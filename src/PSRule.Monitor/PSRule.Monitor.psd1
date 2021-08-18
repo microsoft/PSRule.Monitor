@@ -52,7 +52,9 @@ DotNetFrameworkVersion = '4.7.2'
 # ProcessorArchitecture = ''
 
 # Modules that must be imported into the global environment prior to importing this module
-RequiredModules = @()
+RequiredModules = @(
+    @{ ModuleName = 'PSRule'; ModuleVersion = '0.0.1' }
+)
 
 # Assemblies that must be loaded prior to importing this module
 RequiredAssemblies = @(
@@ -98,7 +100,7 @@ AliasesToExport = @()
 PrivateData = @{
     PSData = @{
         # Tags applied to this module. These help with module discovery in online galleries.
-        Tags = @('Azure', 'Monitor', 'PSRule')
+        Tags = @('Azure', 'Monitor', 'PSRule', 'PSRule-rules')
 
         # A URL to the license for this module.
         LicenseUri = 'https://github.com/Microsoft/PSRule.Monitor/blob/main/LICENSE'

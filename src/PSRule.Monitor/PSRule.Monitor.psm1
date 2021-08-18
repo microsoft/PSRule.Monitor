@@ -24,11 +24,12 @@ function Send-PSRuleMonitorRecord {
     [CmdletBinding()]
     [OutputType([void])]
     param (
-        [Parameter(Mandatory = $True)]
-        [String]$WorkspaceId,
+        [Parameter(Mandatory = $False)]
+        [String]$WorkspaceId = $Env:PSRULE_CONFIGURATION_MONITOR_WORKSPACE_ID,
 
-        [Parameter(Mandatory = $True)]
-        [SecureString]$SharedKey,
+        [Parameter(Mandatory = $False)]
+        [PSRule.Monitor.SecureStringAttribute()]
+        [SecureString]$SharedKey = $Env:PSRULE_CONFIGURATION_MONITOR_WORKSPACE_KEY,
 
         [Parameter(Mandatory = $False, ValueFromPipeline = $True)]
         [PSObject]$InputObject,
@@ -39,28 +40,33 @@ function Send-PSRuleMonitorRecord {
     )
     begin {
         Write-Verbose -Message '[Send-PSRuleMonitorRecord] BEGIN::';
+        $pipelineReady = $False;
 
-        # Build the pipeline
-        $builder = [PSRule.Monitor.Pipeline.PipelineBuilder]::Injest($Null);
-        $builder.WorkspaceId($WorkspaceId);
-        $builder.SharedKey($SharedKey);
-
-        if ($PSBoundParameters.ContainsKey('LogName')) {
-            $builder.LogName($LogName);
-        }
-
-        $builder.UseCommandRuntime($PSCmdlet.CommandRuntime);
-        $builder.UseExecutionContext($ExecutionContext);
         try {
+            # Build the pipeline
+            $builder = [PSRule.Monitor.Pipeline.PipelineBuilder]::Injest($Null);
+            $builder.WorkspaceId($WorkspaceId);
+            $builder.SharedKey($SharedKey);
+
+            if ($PSBoundParameters.ContainsKey('LogName')) {
+                $builder.LogName($LogName);
+            }
+
+            $builder.UseCommandRuntime($PSCmdlet.CommandRuntime);
+            $builder.UseExecutionContext($ExecutionContext);
+
             $pipeline = $builder.Build();
-            $pipeline.Begin();
+            if ($Null -ne $pipeline) {
+                $pipeline.Begin();
+                $pipelineReady = $True;
+            }
         }
         catch {
-            $pipeline.Dispose();
+            throw $_.Exception.GetBaseException();
         }
     }
     process {
-        if ($Null -ne (Get-Variable -Name pipeline -ErrorAction SilentlyContinue)) {
+        if ($pipelineReady) {
             try {
                 $pipeline.Process($InputObject);
             }
@@ -71,7 +77,7 @@ function Send-PSRuleMonitorRecord {
         }
     }
     end {
-        if ($Null -ne (Get-Variable -Name pipeline -ErrorAction SilentlyContinue)) {
+        if ($pipelineReady) {
             try {
                 $pipeline.End();
             }
