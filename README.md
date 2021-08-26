@@ -1,8 +1,8 @@
-# PSRule to Azure Monitor
+# PSRule for Azure Monitor
 
 Log PSRule analysis results to Azure Monitor.
 
-![ci-badge]
+[![Open in Visual Studio Code](https://open.vscode.dev/badges/open-in-vscode.svg)](https://open.vscode.dev/microsoft/PSRule.Monitor)
 
 ## Support
 
@@ -16,9 +16,10 @@ If you have any problems with the [PSRule][engine] engine, please check the proj
 
 Support for this project/ product is limited to the resources listed above.
 
-## Getting the modules
+## Getting the module
 
-This project requires the `PSRule` PowerShell module. For details on each see [install].
+This project requires the `PSRule` PowerShell module.
+For detail on installation and dependencies see [install].
 
 You can download and install these modules from the PowerShell Gallery.
 
@@ -111,9 +112,11 @@ $results | Send-PSRuleMonitorRecord -WorkspaceId <workspaceId> -SharedKey <prima
 ### Querying logs from Azure Monitor
 
 By default, PSRule results are stored in the `PSRule_CL` table.
+The results can be queries from the Log Analytics workspace using Kusto.
+
 The following query returns all rule records from the last hour that failed:
 
-```text
+```kusto
 PSRule_CL
 | where Outcome_s == "Fail" and TimeGenerated > ago(1h)
 ```

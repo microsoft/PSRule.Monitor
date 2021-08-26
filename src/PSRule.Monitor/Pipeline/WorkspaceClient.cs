@@ -94,6 +94,7 @@ namespace PSRule.Monitor.Pipeline
             var moduleName = GetField(info, "moduleName");
             var annotations = GetProperty(info, "annotations");
             var runId = GetPropertyValue(sourceObject, "runId");
+            var duration = GetProperty<long>(sourceObject, "time");
             var record = new LogRecord
             {
                 RuleId = ruleId,
@@ -109,6 +110,7 @@ namespace PSRule.Monitor.Pipeline
                 Annotations = GetPropertyMap(annotations),
                 RunId = runId,
                 CorrelationId = _CorrelationId,
+                Duration = duration,
             };
             return record;
         }

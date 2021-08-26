@@ -41,5 +41,7 @@ namespace PSRule.Monitor.Data
         public string RunId { get; set; }
 
         public Guid CorrelationId { get; set; }
+
+        public long Duration { get; set; }
     }
 }
