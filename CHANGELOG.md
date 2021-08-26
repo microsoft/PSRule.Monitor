@@ -2,6 +2,11 @@
 
 ## Unreleased
 
+What's changed since pre-release v0.3.0-B2108008:
+
+- General improvements:
+  - Added `Duration_d` that duration in milliseconds that the rule took to execute. [#49](https://github.com/microsoft/PSRule.Monitor/issues/49)
+
 ## v0.3.0-B2108008 (pre-release)
 
 What's changed since v0.2.0:
