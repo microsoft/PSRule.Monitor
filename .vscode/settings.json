@@ -24,5 +24,8 @@
         "cmdlet",
         "cmdlets",
         "hashtable"
-    ]
+    ],
+    "files.associations": {
+        "**/.azure-pipelines/**/*.yaml": "azure-pipelines"
+    }
 }
