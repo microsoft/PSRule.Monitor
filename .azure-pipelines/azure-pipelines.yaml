@@ -151,14 +151,14 @@ stages:
 
   - template: jobs/test.yaml
     parameters:
-      name: windows
+      name: ps_5_1_windows_2022
       displayName: 'PowerShell 5.1 - windows-2022'
       imageName: 'windows-2022'
       pwsh: false
 
   - template: jobs/test.yaml
     parameters:
-      name: windows
+      name: ps_7_2_windows_2022
       displayName: 'PowerShell 7.2 - windows-2022'
       imageName: 'windows-2022'
       pwsh: true
