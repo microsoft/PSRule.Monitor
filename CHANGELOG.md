@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+## v0.4.0-B2206007 (pre-release)
+
 What's changed since v0.3.0:
 
 - Engineering:
