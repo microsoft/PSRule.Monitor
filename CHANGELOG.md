@@ -2,6 +2,12 @@
 
 ## Unreleased
 
+What's changed since pre-release v0.4.0-B2206007:
+
+- Engineering:
+  - Bump xunit to v2.4.2.
+    [#76](https://github.com/microsoft/PSRule.Monitor/pull/76)
+
 ## v0.4.0-B2206007 (pre-release)
 
 What's changed since v0.3.0:
