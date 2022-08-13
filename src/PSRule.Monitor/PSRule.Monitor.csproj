@@ -1,28 +1,14 @@
 <Project Sdk="Microsoft.NET.Sdk">
-
+  <Import Project="..\PSRule.Common.props" />
   <PropertyGroup>
-    <TargetFramework>netstandard2.0</TargetFramework>
+    <AssemblyName>Microsoft.PSRule.Monitor.Core</AssemblyName>
     <RootNamespace>PSRule.Monitor</RootNamespace>
     <OutputType>Library</OutputType>
     <ProjectGuid>{bc87e736-4b87-48c2-ac35-3686c86c13a7}</ProjectGuid>
-    <DebugType>portable</DebugType>
-    <NeutralLanguage>en-US</NeutralLanguage>
-    <DebugSymbols>true</DebugSymbols>
     <GenerateAssemblyInfo>true</GenerateAssemblyInfo>
-    <!-- <TreatWarningsAsErrors>true</TreatWarningsAsErrors> -->
-    <Authors>Bernie White</Authors>
-    <AssemblyTitle>PSRule.Monitor</AssemblyTitle>
-    <RepositoryUrl>https://github.com/Microsoft/PSRule.Monitor</RepositoryUrl>
-    <PackageLicenseExpression>https://github.com/Microsoft/PSRule.Monitor/blob/main/LICENSE</PackageLicenseExpression>
-    <Version>0.0.1</Version>
-    <Copyright>Copyright (c) Microsoft Corporation. Licensed under the MIT License.</Copyright>
-    <Description>Log PSRule analysis results to Azure Monitor.
-
-This project uses GitHub Issues to track bugs and feature requests. See GitHub project for more information.</Description>
-  </PropertyGroup>
-
-  <PropertyGroup Condition="'$(OS)' == 'Windows_NT'">
-    <DefineConstants>Windows</DefineConstants>
+    <PackageId>Microsoft.PSRule.Rules.Azure.Core</PackageId>
+    <EnableNuget>false</EnableNuget>
+    <IsPackable>false</IsPackable>
   </PropertyGroup>
 
   <ItemGroup>

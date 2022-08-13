@@ -58,7 +58,7 @@ RequiredModules = @(
 
 # Assemblies that must be loaded prior to importing this module
 RequiredAssemblies = @(
-    'PSRule.Monitor.dll'
+    'Microsoft.PSRule.Monitor.Core.dll'
 )
 
 # Script files (.ps1) that are run in the caller's environment prior to importing this module.
@@ -103,16 +103,16 @@ PrivateData = @{
         Tags = @('Azure', 'Monitor', 'PSRule', 'PSRule-rules')
 
         # A URL to the license for this module.
-        LicenseUri = 'https://github.com/Microsoft/PSRule.Monitor/blob/main/LICENSE'
+        LicenseUri = 'https://github.com/microsoft/PSRule.Monitor/blob/main/LICENSE'
 
         # A URL to the main website for this project.
-        ProjectUri = 'https://github.com/Microsoft/PSRule.Monitor'
+        ProjectUri = 'https://github.com/microsoft/PSRule.Monitor'
 
         # A URL to an icon representing this module.
-        # IconUri = ''
+        IconUri = 'https://raw.githubusercontent.com/microsoft/PSRule.Monitor/main/docs/assets/package_icon.png'
 
         # ReleaseNotes of this module
-        ReleaseNotes = 'https://github.com/Microsoft/PSRule.Monitor/blob/main/CHANGELOG.md'
+        ReleaseNotes = 'https://github.com/microsoft/PSRule.Monitor/blob/main/CHANGELOG.md'
     } # End of PSData hashtable
 } # End of PrivateData hashtable
 
