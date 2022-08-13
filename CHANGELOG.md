@@ -2,6 +2,20 @@
 
 ## Unreleased
 
+## v0.4.0
+
+What's changed since v0.3.0:
+
+- Engineering:
+  - Bump Newtonsoft.Json to v13.0.1.
+    [#73](https://github.com/microsoft/PSRule.Monitor/pull/73)
+  - Bump xunit to v2.4.2.
+    [#76](https://github.com/microsoft/PSRule.Monitor/pull/76)
+
+What's changed since pre-release v0.4.0-B2208003:
+
+- No additional changes.
+
 ## v0.4.0-B2208003 (pre-release)
 
 What's changed since pre-release v0.4.0-B2206007:
