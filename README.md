@@ -2,7 +2,9 @@
 
 Log PSRule analysis results to Azure Monitor.
 
-[![Open in Visual Studio Code](https://open.vscode.dev/badges/open-in-vscode.svg)](https://open.vscode.dev/microsoft/PSRule.Monitor)
+[![Open in vscode.dev](https://img.shields.io/badge/Open%20in-vscode.dev-blue)][1]
+
+  [1]: https://vscode.dev/github/microsoft/PSRule.Monitor
 
 ## Support
 

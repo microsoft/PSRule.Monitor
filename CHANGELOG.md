@@ -13,8 +13,10 @@ What's changed since v0.4.0:
     [#83](https://github.com/microsoft/PSRule.Monitor/issues/83)
   - Automatically update PowerShell dependencies by @BernieWhite.
     [#84](https://github.com/microsoft/PSRule.Monitor/issues/84)
-  - Upate Pester tests to v5 by @BernieWhite.
+  - Update Pester tests to v5 by @BernieWhite.
     [#15](https://github.com/microsoft/PSRule.Monitor/issues/15)
+  - Added code signing and SBOM metadata by @BernieWhite.
+    [#86](https://github.com/microsoft/PSRule.Monitor/issues/86)
 
 ## v0.4.0
 

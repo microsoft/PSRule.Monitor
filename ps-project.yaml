@@ -13,7 +13,7 @@ bugs:
   url: https://github.com/Microsoft/PSRule.Monitor/issues
 
 modules:
-  PSRule: '^0.18.0'
+  PSRule: '^2.3.0'
 
 tasks:
   clear:

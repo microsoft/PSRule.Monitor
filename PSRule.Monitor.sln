@@ -1,11 +1,18 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio Version 16
-VisualStudioVersion = 16.0.29418.71
+# Visual Studio Version 17
+VisualStudioVersion = 17.3.32804.467
 MinimumVisualStudioVersion = 15.0.26124.0
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PSRule.Monitor", "src\PSRule.Monitor\PSRule.Monitor.csproj", "{BC87E736-4B87-48C2-AC35-3686C86C13A7}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PSRule.Monitor.Tests", "tests\PSRule.Monitor.Tests\PSRule.Monitor.Tests.csproj", "{5A666E79-F8B6-4613-8E4C-0F969CBA68E3}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PSRule.Monitor.Tests", "tests\PSRule.Monitor.Tests\PSRule.Monitor.Tests.csproj", "{22BF9268-67E2-4C43-B254-1C43262CDDCC}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SDK", "src\SDK\SDK.csproj", "{C1FF4377-DC4E-4FE4-83FE-23912B039523}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{4358238F-5467-4B8F-B93F-28639447B031}"
+	ProjectSection(SolutionItems) = preProject
+		src\PSRule.Common.props = src\PSRule.Common.props
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -17,10 +24,14 @@ Global
 		{BC87E736-4B87-48C2-AC35-3686C86C13A7}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{BC87E736-4B87-48C2-AC35-3686C86C13A7}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{BC87E736-4B87-48C2-AC35-3686C86C13A7}.Release|Any CPU.Build.0 = Release|Any CPU
-		{5A666E79-F8B6-4613-8E4C-0F969CBA68E3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{5A666E79-F8B6-4613-8E4C-0F969CBA68E3}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{5A666E79-F8B6-4613-8E4C-0F969CBA68E3}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{5A666E79-F8B6-4613-8E4C-0F969CBA68E3}.Release|Any CPU.Build.0 = Release|Any CPU
+		{22BF9268-67E2-4C43-B254-1C43262CDDCC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{22BF9268-67E2-4C43-B254-1C43262CDDCC}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{22BF9268-67E2-4C43-B254-1C43262CDDCC}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{22BF9268-67E2-4C43-B254-1C43262CDDCC}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C1FF4377-DC4E-4FE4-83FE-23912B039523}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C1FF4377-DC4E-4FE4-83FE-23912B039523}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C1FF4377-DC4E-4FE4-83FE-23912B039523}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C1FF4377-DC4E-4FE4-83FE-23912B039523}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

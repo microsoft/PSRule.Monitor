@@ -2,12 +2,12 @@
 # CI pipeline for PSRule.Monitor
 
 variables:
-  version: '0.4.0'
+  version: '0.5.0'
   buildConfiguration: 'Release'
   disable.coverage.autogenerate: 'true'
   imageName: 'ubuntu-20.04'
 
- # Use build number format, i.e. 0.4.0-B1811001
+ # Use build number format, i.e. 0.5.0-B1811001
 name: $(version)-B$(date:yyMM)$(rev:rrr)
 
 trigger:
@@ -145,9 +145,9 @@ stages:
 
   - template: jobs/test.yaml
     parameters:
-      name: macOS_10_15
-      displayName: 'PowerShell 7.2 - macOS-10.15'
-      imageName: 'macOS-10.15'
+      name: macOS_11
+      displayName: 'PowerShell 7.2 - macOS-11'
+      imageName: 'macOS-11'
 
   - template: jobs/test.yaml
     parameters:
@@ -165,50 +165,7 @@ stages:
 
   - template: jobs/testContainer.yaml
     parameters:
-      name: ps_7_2_ubuntu_20_04
+      name: ps_7_ubuntu_20_04
       displayName: 'PowerShell 7.2 - ubuntu-20.04'
       imageName: mcr.microsoft.com/powershell
-      imageTag: 7.2.2-ubuntu-20.04
-
-# Release pipeline
-- stage: Release
-  displayName: Release
-  dependsOn: [ 'Test', 'Analysis' ]
-  condition: and(succeeded(), startsWith(variables['Build.SourceBranch'], 'refs/tags/v0.'))
-  jobs:
-  - job:
-    displayName: Live
-    pool:
-      vmImage: $(imageName)
-    variables:
-      isPreRelease: $[contains(variables['Build.SourceBranchName'], '-B')]
-    steps:
-
-    # Download module from build
-    - task: DownloadPipelineArtifact@2
-      displayName: 'Download module'
-      inputs:
-        artifact: PSRule.Monitor
-        path: $(Build.SourcesDirectory)/out/modules/PSRule.Monitor
-
-    # Install pipeline dependencies
-    - powershell: ./.azure-pipelines/pipeline-deps.ps1
-      displayName: 'Install dependencies'
-
-    # Install pipeline dependencies and build module
-    - powershell: Invoke-Build Release -ApiKey $(apiKey)
-      displayName: 'Publish module'
-
-    # Update GitHub release
-    - task: GitHubRelease@1
-      displayName: 'GitHub release'
-      inputs:
-        gitHubConnection: 'AzureDevOps-PSRule.Monitor'
-        repositoryName: '$(Build.Repository.Name)'
-        action: edit
-        tag: '$(Build.SourceBranchName)'
-        releaseNotesSource: inline
-        releaseNotesInline: 'See [change log](https://github.com/Microsoft/PSRule.Monitor/blob/main/CHANGELOG.md)'
-        assetUploadMode: replace
-        addChangeLog: false
-        isPreRelease: $(isPreRelease)
+      imageTag: 7.2-ubuntu-20.04

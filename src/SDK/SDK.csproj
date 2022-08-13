@@ -1,0 +1,36 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <Import Project="..\PSRule.Common.props" />
+  <PropertyGroup>
+    <PackageId>Microsoft.PSRule.Monitor</PackageId>
+    <ProjectGuid>{c1ff4377-dc4e-4fe4-83fe-23912b039523}</ProjectGuid>
+    <EnableNuget>true</EnableNuget>
+    <PackageReadmeFile>README.md</PackageReadmeFile>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\PSRule.Monitor\PSRule.Monitor.csproj" PrivateAssets="all" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Include="..\PSRule.Monitor\*.psd1;..\PSRule.Monitor\*.psm1;">
+      <PackageCopyToOutput>true</PackageCopyToOutput>
+      <PackagePath>contentFiles\any\any\Modules\PSRule.Monitor;content\Modules\PSRule.Monitor</PackagePath>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+    </Content>
+    <Content Include="..\PSRule.Monitor\rules\*">
+      <PackageCopyToOutput>true</PackageCopyToOutput>
+      <PackagePath>contentFiles\any\any\Modules\PSRule.Monitor\rules;content\Modules\PSRule.Monitor\rules</PackagePath>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+    </Content>
+
+    <Content Include="$(OutputPath)\Microsoft.PSRule.Monitor.Core.dll">
+      <Pack>true</Pack>
+      <PackageCopyToOutput>true</PackageCopyToOutput>
+      <PackagePath>contentFiles\any\any\Modules\PSRule.Monitor;content\Modules\PSRule.Monitor</PackagePath>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+    </Content>
+  </ItemGroup>
+</Project>
