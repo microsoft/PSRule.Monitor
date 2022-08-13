@@ -11,6 +11,10 @@ What's changed since v0.4.0:
     [#79](https://github.com/microsoft/PSRule.Monitor/pull/79)
   - Upgrade support projects to .NET 6 by @BernieWhite.
     [#83](https://github.com/microsoft/PSRule.Monitor/issues/83)
+  - Automatically update PowerShell dependencies by @BernieWhite.
+    [#84](https://github.com/microsoft/PSRule.Monitor/issues/84)
+  - Upate Pester tests to v5 by @BernieWhite.
+    [#15](https://github.com/microsoft/PSRule.Monitor/issues/15)
 
 ## v0.4.0
 
