@@ -19,17 +19,27 @@ param (
     [String]$ArtifactPath = (Join-Path -Path $PWD -ChildPath out/modules),
 
     [Parameter(Mandatory = $False)]
-    [String]$AssertStyle = 'AzurePipelines'
+    [String]$AssertStyle = 'AzurePipelines',
+
+    [Parameter(Mandatory = $False)]
+    [String]$TestGroup = $Null
 )
 
+Write-Host -Object "[Pipeline] -- PowerShell: v$($PSVersionTable.PSVersion.ToString())" -ForegroundColor Green;
 Write-Host -Object "[Pipeline] -- PWD: $PWD" -ForegroundColor Green;
 Write-Host -Object "[Pipeline] -- ArtifactPath: $ArtifactPath" -ForegroundColor Green;
 Write-Host -Object "[Pipeline] -- BuildNumber: $($Env:BUILD_BUILDNUMBER)" -ForegroundColor Green;
 Write-Host -Object "[Pipeline] -- SourceBranch: $($Env:BUILD_SOURCEBRANCH)" -ForegroundColor Green;
 Write-Host -Object "[Pipeline] -- SourceBranchName: $($Env:BUILD_SOURCEBRANCHNAME)" -ForegroundColor Green;
+Write-Host -Object "[Pipeline] -- Culture: $((Get-Culture).Name), $((Get-Culture).Parent)" -ForegroundColor Green;
 
 if ($Env:SYSTEM_DEBUG -eq 'true') {
     $VerbosePreference = 'Continue';
+}
+
+$forcePublish = $False;
+if ($Env:FORCE_PUBLISH -eq 'true') {
+    $forcePublish = $True;
 }
 
 if ($Env:BUILD_SOURCEBRANCH -like '*/tags/*' -and $Env:BUILD_SOURCEBRANCHNAME -like 'v0.*') {
@@ -51,7 +61,7 @@ if ($version -like '*-*') {
 Write-Host -Object "[Pipeline] -- Using version: $version" -ForegroundColor Green;
 Write-Host -Object "[Pipeline] -- Using versionSuffix: $versionSuffix" -ForegroundColor Green;
 
-if ($Env:coverage -eq 'true') {
+if ($Env:COVERAGE -eq 'true') {
     $CodeCoverage = $True;
 }
 
@@ -103,10 +113,11 @@ task VersionModule ModuleDependencies, {
         }
     }
 
+    $dependencies = Get-Content -Path $PWD/modules.json -Raw | ConvertFrom-Json;
     $manifest = Test-ModuleManifest -Path $manifestPath;
     $requiredModules = $manifest.RequiredModules | ForEach-Object -Process {
         if ($_.Name -eq 'PSRule' -and $Configuration -eq 'Release') {
-            @{ ModuleName = 'PSRule'; ModuleVersion = '1.6.0' }
+            @{ ModuleName = 'PSRule'; ModuleVersion = $dependencies.dependencies.PSRule.version }
         }
         else {
             @{ ModuleName = $_.Name; ModuleVersion = $_.Version }
@@ -124,7 +135,7 @@ task ReleaseModule VersionModule, {
         Write-Error -Message "[ReleaseModule] -- Module path does not exist";
     }
     elseif (![String]::IsNullOrEmpty($ApiKey)) {
-        Publish-Module -Path $modulePath -NuGetApiKey $ApiKey;
+        Publish-Module -Path $modulePath -NuGetApiKey $ApiKey -Force:$forcePublish;
     }
 }
 
@@ -135,54 +146,14 @@ task NuGet {
     }
 }
 
-# Synopsis: Install Pester module
-task Pester NuGet, {
-    if ($Null -eq (Get-InstalledModule -Name Pester -RequiredVersion 4.10.1 -ErrorAction Ignore)) {
-        Install-Module -Name Pester -RequiredVersion 4.10.1 -Scope CurrentUser -Force -SkipPublisherCheck;
-    }
-    Import-Module -Name Pester -RequiredVersion 4.10.1 -Verbose:$False;
-}
-
-# Synopsis: Install PSScriptAnalyzer module
-task PSScriptAnalyzer NuGet, {
-    if ($Null -eq (Get-InstalledModule -Name PSScriptAnalyzer -MinimumVersion 1.18.3 -ErrorAction Ignore)) {
-        Install-Module -Name PSScriptAnalyzer -MinimumVersion 1.18.3 -Scope CurrentUser -Force;
-    }
-    Import-Module -Name PSScriptAnalyzer -Verbose:$False;
-}
-
-# Synopsis: Install PSRule
-task PSRule NuGet, {
-    if ($Null -eq (Get-InstalledModule -Name PSRule -MinimumVersion 1.6.0 -ErrorAction Ignore)) {
-        Install-Module -Name PSRule -Repository PSGallery -MinimumVersion 1.6.0 -Scope CurrentUser -Force;
-    }
-    if ($Null -eq (Get-InstalledModule -Name PSRule.Rules.MSFT.OSS -MinimumVersion 0.1.0 -ErrorAction Ignore)) {
-        Install-Module -Name PSRule.Rules.MSFT.OSS -Repository PSGallery -MinimumVersion 0.1.0 -Scope CurrentUser -Force;
-    }
-}
-
-# Synopsis: Install PSDocs
-task PSDocs NuGet, {
-    if ($Null -eq (Get-InstalledModule -Name PSDocs -MinimumVersion 0.8.0 -ErrorAction Ignore)) {
-        Install-Module -Name PSDocs -Repository PSGallery -MinimumVersion 0.8.0 -Scope CurrentUser -Force;
-    }
-    Import-Module -Name PSDocs -Verbose:$False;
-}
-
-# Synopsis: Install PlatyPS module
-task platyPS {
-    if ($Null -eq (Get-InstalledModule -Name PlatyPS -MinimumVersion 0.14.0 -ErrorAction Ignore)) {
-        Install-Module -Name PlatyPS -Scope CurrentUser -MinimumVersion 0.14.0 -Force;
-    }
-}
-
 # Synopsis: Install module dependencies
-task ModuleDependencies NuGet, PSRule, {
+task ModuleDependencies Dependencies, {
 }
 
 task BuildDotNet {
     exec {
         # Build library
+        dotnet build src/SDK -c $Configuration -f netstandard2.0 -p:version=$Build
         dotnet publish src/PSRule.Monitor -c $Configuration -f netstandard2.0 -o $(Join-Path -Path $PWD -ChildPath out/modules/PSRule.Monitor) -p:version=$Build
     }
 }
@@ -212,20 +183,42 @@ task CopyModule {
 # Synopsis: Build modules only
 task BuildModule BuildDotNet, CopyModule
 
-task TestModule ModuleDependencies, Pester, PSScriptAnalyzer, {
+task TestModule ModuleDependencies, {
     # Run Pester tests
-    $pesterParams = @{ Path = (Join-Path -Path $PWD -ChildPath tests/PSRule.Monitor.Tests); OutputFile = 'reports/pester-unit.xml'; OutputFormat = 'NUnitXml'; PesterOption = @{ IncludeVSCodeMarker = $True }; PassThru = $True; };
+    $pesterOptions = @{
+        Run = @{
+            Path = (Join-Path -Path $PWD -ChildPath tests/PSRule.Monitor.Tests);
+            PassThru = $True;
+        };
+        TestResult = @{
+            Enabled = $True;
+            OutputFormat = 'NUnitXml';
+            OutputPath = 'reports/pester-unit.xml';
+        };
+    };
 
     if ($CodeCoverage) {
-        $pesterParams.Add('CodeCoverage', (Join-Path -Path $PWD -ChildPath 'out/modules/**/*.psm1'));
-        $pesterParams.Add('CodeCoverageOutputFile', (Join-Path -Path $PWD -ChildPath 'reports/pester-coverage.xml'));
+        $codeCoverageOptions = @{
+            Enabled = $True;
+            OutputPath = (Join-Path -Path $PWD -ChildPath 'reports/pester-coverage.xml');
+            Path = (Join-Path -Path $PWD -ChildPath 'out/modules/**/*.psm1');
+        };
+
+        $pesterOptions.Add('CodeCoverage', $codeCoverageOptions);
     }
 
     if (!(Test-Path -Path reports)) {
         $Null = New-Item -Path reports -ItemType Directory -Force;
     }
 
-    $results = Invoke-Pester @pesterParams;
+    if ($Null -ne $TestGroup) {
+        $pesterOptions.Add('Filter', @{ Tag = $TestGroup });
+    }
+
+    # https://pester.dev/docs/commands/New-PesterConfiguration
+    $pesterConfiguration = New-PesterConfiguration -Hashtable $pesterOptions;
+
+    $results = Invoke-Pester -Configuration $pesterConfiguration;
 
     # Throw an error if pester tests failed
     if ($Null -eq $results) {
@@ -237,7 +230,7 @@ task TestModule ModuleDependencies, Pester, PSScriptAnalyzer, {
 }
 
 # Synopsis: Run validation
-task Rules PSRule, {
+task Rules Dependencies, {
     $assertParams = @{
         Path = './.ps-rule/'
         Style = $AssertStyle
@@ -252,22 +245,23 @@ task Rules PSRule, {
 }
 
 # Synopsis: Run script analyzer
-task Analyze Build, PSScriptAnalyzer, {
+task Analyze Build, Dependencies, {
     Invoke-ScriptAnalyzer -Path out/modules/PSRule.Monitor;
 }
 
 # Synopsis: Build help
-task BuildHelp BuildModule, PlatyPS, {
-
-    # Copy generated help into module out path
-    if (!(Test-Path -Path out/modules/PSRule.Monitor/en-US/)) {
-        $Null = New-Item -Path out/modules/PSRule.Monitor/en-US -Force -ItemType Directory;
+task BuildHelp BuildModule, Dependencies, {
+    if (!(Test-Path out/modules/PSRule.Monitor/en/)) {
+        $Null = New-Item -Path out/modules/PSRule.Monitor/en/ -ItemType Directory -Force;
     }
-    if (!(Test-Path -Path out/modules/PSRule.Monitor/en-AU/)) {
-        $Null = New-Item -Path out/modules/PSRule.Monitor/en-AU -Force -ItemType Directory;
+    if (!(Test-Path out/modules/PSRule.Monitor/en-US/)) {
+        $Null = New-Item -Path out/modules/PSRule.Monitor/en-US/ -ItemType Directory -Force;
     }
-    if (!(Test-Path -Path out/modules/PSRule.Monitor/en-GB/)) {
-        $Null = New-Item -Path out/modules/PSRule.Monitor/en-GB -Force -ItemType Directory;
+    if (!(Test-Path out/modules/PSRule.Monitor/en-AU/)) {
+        $Null = New-Item -Path out/modules/PSRule.Monitor/en-AU/ -ItemType Directory -Force;
+    }
+    if (!(Test-Path out/modules/PSRule.Monitor/en-GB/)) {
+        $Null = New-Item -Path out/modules/PSRule.Monitor/en-GB/ -ItemType Directory -Force;
     }
 
     # Avoid YamlDotNet issue in same app domain
@@ -295,11 +289,9 @@ task ScaffoldHelp Build, {
     Update-MarkdownHelp -Path '.\docs\commands\PSRule.Monitor\en-US';
 }
 
-# Synopsis: Add shipit build tag
-task TagBuild {
-    if ($Null -ne $Env:BUILD_DEFINITIONNAME) {
-        Write-Host "`#`#vso[build.addbuildtag]shipit";
-    }
+task Dependencies NuGet, {
+    Import-Module $PWD/scripts/dependencies.psm1;
+    Install-Dependencies -Path $PWD/modules.json;
 }
 
 # Synopsis: Remove temp files.
@@ -311,7 +303,7 @@ task Build Clean, BuildModule, VersionModule, BuildHelp
 
 task Test Build, Rules, TestDotNet, TestModule
 
-task Release ReleaseModule, TagBuild
+task Release ReleaseModule
 
 # Synopsis: Build and test. Entry point for CI Build stage
 task . Build, Rules, TestDotNet

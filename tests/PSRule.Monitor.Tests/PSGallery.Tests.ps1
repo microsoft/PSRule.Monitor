@@ -8,16 +8,22 @@
 [CmdletBinding()]
 param ()
 
-# Setup error handling
-$ErrorActionPreference = 'Stop';
-Set-StrictMode -Version latest;
+BeforeAll {
+    # Setup error handling
+    $ErrorActionPreference = 'Stop';
+    Set-StrictMode -Version latest;
 
-# Setup tests paths
-$rootPath = $PWD;
+    if ($Env:SYSTEM_DEBUG -eq 'true') {
+        $VerbosePreference = 'Continue';
+    }
+
+    # Setup tests paths
+    $rootPath = $PWD;
+    $modulePath = (Join-Path -Path $rootPath -ChildPath out/modules/PSRule.Monitor);
+    $here = (Resolve-Path $PSScriptRoot).Path;
+}
 
 Describe 'PSRule.Monitor' -Tag 'PowerShellGallery' {
-    $modulePath = (Join-Path -Path $rootPath -ChildPath out/modules/PSRule.Monitor);
-
     Context 'Module' {
         It 'Can be imported' {
             Import-Module $modulePath -Force;
@@ -25,11 +31,13 @@ Describe 'PSRule.Monitor' -Tag 'PowerShellGallery' {
     }
 
     Context 'Manifest' {
-        $manifestPath = (Join-Path -Path $rootPath -ChildPath out/modules/PSRule.Monitor/PSRule.Monitor.psd1);
-        $result = Test-ModuleManifest -Path $manifestPath;
-        $Global:psEditor = $True;
-        $Null = Import-Module $modulePath -Force;
-        $commands = Get-Command -Module PSRule.Monitor -All;
+        BeforeAll {
+            $manifestPath = (Join-Path -Path $rootPath -ChildPath out/modules/PSRule.Monitor/PSRule.Monitor.psd1);
+            $result = Test-ModuleManifest -Path $manifestPath;
+            $Global:psEditor = $True;
+            $Null = Import-Module $modulePath -Force;
+            $commands = Get-Command -Module PSRule.Monitor -All;
+        }
 
         It 'Has required fields' {
             $result.Name | Should -Be 'PSRule.Monitor';
