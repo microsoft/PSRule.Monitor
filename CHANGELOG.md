@@ -2,6 +2,16 @@
 
 ## Unreleased
 
+What's changed since v0.4.0:
+
+- Engineering:
+  - Bump Microsoft.PowerShell.SDK to v7.2.6.
+    [#80](https://github.com/microsoft/PSRule.Monitor/pull/80)
+  - Bump Microsoft.NET.Test.Sdk to v17.3.0.
+    [#79](https://github.com/microsoft/PSRule.Monitor/pull/79)
+  - Upgrade support projects to .NET 6 by @BernieWhite.
+    [#83](https://github.com/microsoft/PSRule.Monitor/issues/83)
+
 ## v0.4.0
 
 What's changed since v0.3.0:
