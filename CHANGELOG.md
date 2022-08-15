@@ -2,6 +2,12 @@
 
 ## Unreleased
 
+What's changed since pre-release v0.5.0-B0005:
+
+- Engineering:
+  - Bump PSRule to v2.3.2.
+    [#90](https://github.com/microsoft/PSRule.Monitor/pull/90)
+
 ## v0.5.0-B0005 (pre-release)
 
 What's changed since v0.4.0:
