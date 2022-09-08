@@ -2,6 +2,30 @@
 
 ## Unreleased
 
+## v0.5.0
+
+What's changed since v0.4.0:
+
+- Engineering:
+  - Bump PSRule to v2.3.2.
+    [#90](https://github.com/microsoft/PSRule.Monitor/pull/90)
+  - Bump Microsoft.PowerShell.SDK to v7.2.6.
+    [#80](https://github.com/microsoft/PSRule.Monitor/pull/80)
+  - Bump Microsoft.NET.Test.Sdk to v17.3.0.
+    [#79](https://github.com/microsoft/PSRule.Monitor/pull/79)
+  - Upgrade support projects to .NET 6 by @BernieWhite.
+    [#83](https://github.com/microsoft/PSRule.Monitor/issues/83)
+  - Automatically update PowerShell dependencies by @BernieWhite.
+    [#84](https://github.com/microsoft/PSRule.Monitor/issues/84)
+  - Update Pester tests to v5 by @BernieWhite.
+    [#15](https://github.com/microsoft/PSRule.Monitor/issues/15)
+  - Added code signing and SBOM metadata by @BernieWhite.
+    [#86](https://github.com/microsoft/PSRule.Monitor/issues/86)
+
+What's changed since pre-release v0.5.0-B0014:
+
+- No additional changes.
+
 ## v0.5.0-B0014 (pre-release)
 
 What's changed since pre-release v0.5.0-B0005:
