@@ -2,6 +2,12 @@
 
 ## Unreleased
 
+What's changed since v0.5.0:
+
+- Engineering:
+  - Bump Microsoft.NET.Test.Sdk to v17.3.2.
+    [#98](https://github.com/microsoft/PSRule.Monitor/pull/98)
+
 ## v0.5.0
 
 What's changed since v0.4.0:
