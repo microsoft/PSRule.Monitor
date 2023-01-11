@@ -5,10 +5,12 @@
 What's changed since v0.5.0:
 
 - Engineering:
-  - Bump Microsoft.NET.Test.Sdk to v17.3.2.
-    [#98](https://github.com/microsoft/PSRule.Monitor/pull/98)
   - Bump PSRule to v2.7.0.
     [#95](https://github.com/microsoft/PSRule.Monitor/pull/95)
+  - Bump Newtonsoft.Json to v13.0.2.
+    [#110](https://github.com/microsoft/PSRule.Monitor/pull/110)
+  - Bump Microsoft.NET.Test.Sdk to v17.3.2.
+    [#98](https://github.com/microsoft/PSRule.Monitor/pull/98)
   - Bump PSScriptAnalyzer to v1.21.0.
     [#95](https://github.com/microsoft/PSRule.Monitor/pull/95)
 
