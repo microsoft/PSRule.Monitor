@@ -2,6 +2,14 @@
 
 ## Unreleased
 
+What's changed since pre-release v0.6.0-B0012:
+
+- Engineering:
+  - Bump Microsoft.NET.Test.Sdk to v17.4.1.
+    [#113](https://github.com/microsoft/PSRule.Monitor/pull/113)
+
+## v0.6.0-B0012 (pre-release)
+
 What's changed since v0.5.0:
 
 - Engineering:
