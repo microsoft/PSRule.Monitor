@@ -9,6 +9,8 @@ What's changed since pre-release v0.6.0-B0012:
     [#113](https://github.com/microsoft/PSRule.Monitor/pull/113)
   - Bump Newtonsoft.Json to v13.0.2.
     [#110](https://github.com/microsoft/PSRule.Monitor/pull/110)
+  - Bump Microsoft.CodeAnalysis.NetAnalyzers to v7.0.0.
+    [#111](https://github.com/microsoft/PSRule.Monitor/pull/111)
 
 ## v0.6.0-B0012 (pre-release)
 
