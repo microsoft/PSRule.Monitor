@@ -23,6 +23,8 @@ What's changed since v0.5.0:
     [#98](https://github.com/microsoft/PSRule.Monitor/pull/98)
   - Bump PSScriptAnalyzer to v1.21.0.
     [#95](https://github.com/microsoft/PSRule.Monitor/pull/95)
+  - Bump Pester to v5.4.0.
+    [#115](https://github.com/microsoft/PSRule.Monitor/pull/115)
   - Bump coverlet.collector to v3.2.0.
     [#106](https://github.com/microsoft/PSRule.Monitor/pull/106)
 
