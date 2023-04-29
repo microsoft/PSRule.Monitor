@@ -7,8 +7,8 @@ What's changed since pre-release v0.6.0-B0012:
 - Engineering:
   - Bump Microsoft.NET.Test.Sdk to v17.4.1.
     [#113](https://github.com/microsoft/PSRule.Monitor/pull/113)
-  - Bump Newtonsoft.Json to v13.0.2.
-    [#110](https://github.com/microsoft/PSRule.Monitor/pull/110)
+  - Bump Newtonsoft.Json to v13.0.3.
+    [#120](https://github.com/microsoft/PSRule.Monitor/pull/120)
   - Bump Microsoft.CodeAnalysis.NetAnalyzers to v7.0.0.
     [#111](https://github.com/microsoft/PSRule.Monitor/pull/111)
 
