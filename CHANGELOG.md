@@ -5,6 +5,10 @@
 What's changed since pre-release v0.6.0-B0012:
 
 - Engineering:
+  - Bump PSRule to v2.8.1.
+    [#126](https://github.com/microsoft/PSRule.Monitor/pull/126)
+  - Bump Pester to v5.4.1.
+    [#126](https://github.com/microsoft/PSRule.Monitor/pull/126)
   - Bump Microsoft.NET.Test.Sdk to v17.5.0.
     [#118](https://github.com/microsoft/PSRule.Monitor/pull/118)
   - Bump Newtonsoft.Json to v13.0.3.
