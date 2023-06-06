@@ -2,6 +2,30 @@
 
 ## Unreleased
 
+## v0.6.0
+
+What's changed since v0.5.0:
+
+- Engineering:
+  - Bump PSRule to v2.8.1.
+    [#126](https://github.com/microsoft/PSRule.Monitor/pull/126)
+  - Bump Pester to v5.4.1.
+    [#126](https://github.com/microsoft/PSRule.Monitor/pull/126)
+  - Bump PSScriptAnalyzer to v1.21.0.
+    [#95](https://github.com/microsoft/PSRule.Monitor/pull/95)
+  - Bump Microsoft.NET.Test.Sdk to v17.5.0.
+    [#118](https://github.com/microsoft/PSRule.Monitor/pull/118)
+  - Bump Newtonsoft.Json to v13.0.3.
+    [#120](https://github.com/microsoft/PSRule.Monitor/pull/120)
+  - Bump Microsoft.CodeAnalysis.NetAnalyzers to v7.0.1.
+    [#121](https://github.com/microsoft/PSRule.Monitor/pull/121)
+  - Bump coverlet.collector to v3.2.0.
+    [#106](https://github.com/microsoft/PSRule.Monitor/pull/106)
+
+What's changed since pre-release v0.6.0-B0035:
+
+- No additional changes.
+
 ## v0.6.0-B0035 (pre-release)
 
 What's changed since pre-release v0.6.0-B0012:
