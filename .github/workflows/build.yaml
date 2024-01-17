@@ -128,7 +128,7 @@ jobs:
         uses: actions/download-artifact@v4
         with:
           name: Module
-          path: ./out/modules/PSRule
+          path: ./out/modules/PSRule.Monitor
 
       - if: ${{ matrix.shell == 'pwsh' }}
         name: Test module (PowerShell)
