@@ -1,7 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>net6.0</TargetFramework>
+    <TargetFramework>net7.0</TargetFramework>
     <ProjectGuid>{22bf9268-67e2-4c43-b254-1c43262cddcc}</ProjectGuid>
     <IsTestProject>true</IsTestProject>
     <IsPackable>false</IsPackable>
@@ -11,7 +11,8 @@
 
   <ItemGroup>
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.5.0" />
-    <PackageReference Include="Microsoft.PowerShell.SDK" Version="7.2.6" />
+    <PackageReference Include="Microsoft.PowerShell.SDK" Version="7.3.7" />
+    <PackageReference Include="System.Management.Automation" Version="7.3.7" />
     <PackageReference Include="xunit" Version="2.4.2" />
     <PackageReference Include="xunit.runner.visualstudio" Version="2.4.5">
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
