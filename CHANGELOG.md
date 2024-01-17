@@ -5,6 +5,8 @@
 What's changed since v0.6.0:
 
 - Engineering:
+  - Bump xunit to v2.6.6.
+    [#152](https://github.com/microsoft/PSRule.Monitor/pull/152)
   - Bump xunit.runner.visualstudio to v2.5.6.
     [#149](https://github.com/microsoft/PSRule.Monitor/pull/149)
 
