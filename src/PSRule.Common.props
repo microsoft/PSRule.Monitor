@@ -3,7 +3,8 @@
   <!-- Project defaults -->
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
-    <LangVersion>9.0</LangVersion>
+    <LangVersion>12.0</LangVersion>
+    <!-- <Nullable>enable</Nullable> -->
     <NeutralLanguage>en-US</NeutralLanguage>
     <DebugSymbols>true</DebugSymbols>
     <DebugType>portable</DebugType>
@@ -30,7 +31,8 @@
     <Copyright>&#169; Microsoft Corporation. All rights reserved.</Copyright>
     <Description>Log PSRule analysis results to Azure Monitor.
 
-This project uses GitHub Issues to track bugs and feature requests. See GitHub project for more information.</Description>
+      This project uses GitHub Issues to track bugs and feature requests. See GitHub project for
+      more information.</Description>
     <PackageReleaseNotes>For a list of changes see https://aka.ms/ps-rule-monitor/changelog.</PackageReleaseNotes>
     <PackageIcon>package_icon.png</PackageIcon>
   </PropertyGroup>

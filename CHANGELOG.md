@@ -2,6 +2,12 @@
 
 ## Unreleased
 
+What's changed since v0.6.0:
+
+- Engineering:
+  - Updated to .NET 8.0 for build process and testing.
+    [#150](https://github.com/microsoft/PSRule.Monitor/issues/150)
+
 ## v0.6.0
 
 What's changed since v0.5.0:

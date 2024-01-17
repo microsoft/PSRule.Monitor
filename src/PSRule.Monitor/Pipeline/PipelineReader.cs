@@ -4,38 +4,37 @@
 using System.Collections.Concurrent;
 using System.Management.Automation;
 
-namespace PSRule.Monitor.Pipeline
+namespace PSRule.Monitor.Pipeline;
+
+internal sealed class PipelineReader
 {
-    internal sealed class PipelineReader
+    private readonly ConcurrentQueue<PSObject> _Queue;
+
+    public PipelineReader()
     {
-        private readonly ConcurrentQueue<PSObject> _Queue;
+        _Queue = new ConcurrentQueue<PSObject>();
+    }
 
-        public PipelineReader()
-        {
-            _Queue = new ConcurrentQueue<PSObject>();
-        }
+    public int Count
+    {
+        get { return _Queue.Count; }
+    }
 
-        public int Count
-        {
-            get { return _Queue.Count; }
-        }
+    public bool IsEmpty
+    {
+        get { return _Queue.IsEmpty; }
+    }
 
-        public bool IsEmpty
-        {
-            get { return _Queue.IsEmpty; }
-        }
+    public void Enqueue(PSObject sourceObject)
+    {
+        if (sourceObject == null)
+            return;
 
-        public void Enqueue(PSObject sourceObject)
-        {
-            if (sourceObject == null)
-                return;
+        _Queue.Enqueue(sourceObject);
+    }
 
-            _Queue.Enqueue(sourceObject);
-        }
-
-        public bool TryDequeue(out PSObject sourceObject)
-        {
-            return _Queue.TryDequeue(out sourceObject);
-        }
+    public bool TryDequeue(out PSObject sourceObject)
+    {
+        return _Queue.TryDequeue(out sourceObject);
     }
 }

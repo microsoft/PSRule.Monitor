@@ -162,13 +162,13 @@ task TestDotNet {
     if ($CodeCoverage) {
         exec {
             # Test library
-            dotnet test --collect:"Code Coverage" --logger trx -r (Join-Path $PWD -ChildPath reports/) tests/PSRule.Monitor.Tests
+            dotnet test -f net8.0 --collect:"Code Coverage" --logger trx -r (Join-Path $PWD -ChildPath reports/) tests/PSRule.Monitor.Tests
         }
     }
     else {
         exec {
             # Test library
-            dotnet test --logger trx -r (Join-Path $PWD -ChildPath reports/) tests/PSRule.Monitor.Tests
+            dotnet test -f net8.0 --logger trx -r (Join-Path $PWD -ChildPath reports/) tests/PSRule.Monitor.Tests
         }
     }
 }
