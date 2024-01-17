@@ -159,18 +159,7 @@ task BuildDotNet {
 }
 
 task TestDotNet {
-    if ($CodeCoverage) {
-        exec {
-            # Test library
-            dotnet test -f net7.0 --collect:"Code Coverage" --logger trx -r (Join-Path $PWD -ChildPath reports/) tests/PSRule.Monitor.Tests
-        }
-    }
-    else {
-        exec {
-            # Test library
-            dotnet test -f net7.0 --logger trx -r (Join-Path $PWD -ChildPath reports/) tests/PSRule.Monitor.Tests
-        }
-    }
+    dotnet test
 }
 
 task CopyModule {
