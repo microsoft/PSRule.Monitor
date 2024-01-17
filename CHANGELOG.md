@@ -9,6 +9,8 @@ What's changed since v0.6.0:
     [#152](https://github.com/microsoft/PSRule.Monitor/pull/152)
   - Bump xunit.runner.visualstudio to v2.5.6.
     [#149](https://github.com/microsoft/PSRule.Monitor/pull/149)
+  - Bump Microsoft.NET.Test.Sdk to v17.8.0.
+    [#147](https://github.com/microsoft/PSRule.Monitor/pull/147)
 
 <!--  - Updated to .NET 8.0 for build process and testing.
     [#150](https://github.com/microsoft/PSRule.Monitor/issues/150) -->
