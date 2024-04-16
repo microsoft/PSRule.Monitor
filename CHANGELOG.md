@@ -13,6 +13,8 @@ What's changed since v0.6.0:
     [#147](https://github.com/microsoft/PSRule.Monitor/pull/147)
   - Bump Microsoft.CodeAnalysis.NetAnalyzers to v8.0.0.
     [#145](https://github.com/microsoft/PSRule.Monitor/pull/145)
+  - Bump Microsoft.SourceLink.GitHub to v8.0.0.
+    [#153](https://github.com/microsoft/PSRule.Monitor/pull/153)
 
 <!--  - Updated to .NET 8.0 for build process and testing.
     [#150](https://github.com/microsoft/PSRule.Monitor/issues/150) -->
