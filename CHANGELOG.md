@@ -11,8 +11,8 @@ What's changed since v0.6.0:
     [#172](https://github.com/microsoft/PSRule.Monitor/pull/172)
   - Bump PSScriptAnalyzer to v1.22.0.
     [#172](https://github.com/microsoft/PSRule.Monitor/pull/172)
-  - Bump xunit to v2.6.6.
-    [#152](https://github.com/microsoft/PSRule.Monitor/pull/152)
+  - Bump xunit to v2.9.0.
+    [#170](https://github.com/microsoft/PSRule.Monitor/pull/170)
   - Bump xunit.runner.visualstudio to v2.5.8.
     [#162](https://github.com/microsoft/PSRule.Monitor/pull/162)
   - Bump Microsoft.NET.Test.Sdk to v17.10.0.
