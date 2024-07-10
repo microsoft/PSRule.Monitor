@@ -15,8 +15,8 @@ What's changed since v0.6.0:
     [#152](https://github.com/microsoft/PSRule.Monitor/pull/152)
   - Bump xunit.runner.visualstudio to v2.5.8.
     [#162](https://github.com/microsoft/PSRule.Monitor/pull/162)
-  - Bump Microsoft.NET.Test.Sdk to v17.9.0.
-    [#155](https://github.com/microsoft/PSRule.Monitor/pull/155)
+  - Bump Microsoft.NET.Test.Sdk to v17.10.0.
+    [#165](https://github.com/microsoft/PSRule.Monitor/pull/165)
   - Bump Microsoft.CodeAnalysis.NetAnalyzers to v8.0.0.
     [#145](https://github.com/microsoft/PSRule.Monitor/pull/145)
   - Bump Microsoft.SourceLink.GitHub to v8.0.0.
