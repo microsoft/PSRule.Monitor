@@ -5,6 +5,12 @@
 What's changed since v0.6.0:
 
 - Engineering:
+  - Bump PSRule to v2.9.0.
+    [#172](https://github.com/microsoft/PSRule.Monitor/pull/172)
+  - Bump Pester to v5.6.1.
+    [#172](https://github.com/microsoft/PSRule.Monitor/pull/172)
+  - Bump PSScriptAnalyzer to v1.22.0.
+    [#172](https://github.com/microsoft/PSRule.Monitor/pull/172)
   - Bump xunit to v2.6.6.
     [#152](https://github.com/microsoft/PSRule.Monitor/pull/152)
   - Bump xunit.runner.visualstudio to v2.5.8.
