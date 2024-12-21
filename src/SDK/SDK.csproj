@@ -1,5 +1,4 @@
 <Project Sdk="Microsoft.NET.Sdk">
-  <Import Project="..\PSRule.Common.props" />
   <PropertyGroup>
     <PackageId>Microsoft.PSRule.Monitor</PackageId>
     <ProjectGuid>{c1ff4377-dc4e-4fe4-83fe-23912b039523}</ProjectGuid>
