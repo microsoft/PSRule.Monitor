@@ -27,3 +27,17 @@ updates:
   - 'dependencies'
   reviewers:
   - 'microsoft/psrule'
+  groups:
+    # Group PowerShell packages that have inter-dependencies
+    dev-powershell:
+      patterns:
+        - System.Management.Automation
+        - Microsoft.PowerShell.SDK
+    dev-testing:
+      patterns:
+        - xunit
+        - xunit.runner.visualstudio
+        - coverlet.collector
+        - Microsoft.NET.Test.Sdk
+  ignore:
+    - dependency-name: gitversion.tool
