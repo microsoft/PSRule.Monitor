@@ -23,9 +23,8 @@ What's changed since v0.6.0:
     [#153](https://github.com/microsoft/PSRule.Monitor/pull/153)
   - Bump coverlet.collector to v6.0.2.
     [#158](https://github.com/microsoft/PSRule.Monitor/pull/158)
-
-<!--  - Updated to .NET 8.0 for build process and testing.
-    [#150](https://github.com/microsoft/PSRule.Monitor/issues/150) -->
+  - Updated to .NET 8.0 for build process and testing.
+    [#150](https://github.com/microsoft/PSRule.Monitor/issues/150)
 
 ## v0.6.0
 
