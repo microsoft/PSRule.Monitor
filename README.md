@@ -2,9 +2,13 @@
 
 Log PSRule analysis results to Azure Monitor.
 
-[![Open in vscode.dev](https://img.shields.io/badge/Open%20in-vscode.dev-blue)][1]
-
-  [1]: https://vscode.dev/github/microsoft/PSRule.Monitor
+> [!NOTE]
+> This module is being migrated into <https://github.com/microsoft/PSRule>
+> and this repository will be archived in the future.
+> The functionality of this module will be included PSRule in a future release.
+> This repository currently reflects functionality as a standalone module.
+> Please log any new issues at <https://github.com/microsoft/PSRule/issues>
+---
 
 ## Support
 
@@ -12,9 +16,6 @@ This project uses GitHub Issues to track bugs and feature requests.
 Please search the existing issues before filing new issues to avoid duplicates.
 
 - For new issues, file your bug or feature request as a new [issue].
-- For help, discussion, and support questions about using this project, join or start a [discussion].
-
-If you have any problems with the [PSRule][engine] engine, please check the project GitHub [issues](https://github.com/Microsoft/PSRule/issues) page instead.
 
 Support for this project/ product is limited to the resources listed above.
 
@@ -137,16 +138,6 @@ The following commands exist in the `PSRule.Monitor` module:
 
 - [Send-PSRuleMonitorRecord](docs/commands/PSRule.Monitor/en-US/Send-PSRuleMonitorRecord.md) - Send analysis results from PSRule to Azure Monitor.
 
-## Changes and versioning
-
-Modules in this repository will use the [semantic versioning](http://semver.org/) model to declare breaking changes from v1.0.0.
-Prior to v1.0.0, breaking changes may be introduced in minor (0.x.0) version increments.
-For a list of module changes please see the [change log](CHANGELOG.md).
-
-> Pre-release module versions are created on major commits and can be installed from the PowerShell Gallery.
-> Pre-release versions should be considered experimental.
-> Modules and change log details for pre-releases will be removed as standard releases are made available.
-
 ## Contributing
 
 This project welcomes contributions and suggestions.
@@ -168,6 +159,4 @@ This project is [licensed under the MIT License](LICENSE).
 
 [install]: docs/scenarios/install-instructions.md
 [module]: https://www.powershellgallery.com/packages/PSRule.Monitor
-[engine]: https://github.com/Microsoft/PSRule
-[issue]: https://github.com/Microsoft/PSRule.Monitor/issues
-[discussion]: https://github.com/microsoft/PSRule.Monitor/discussions
+[issue]: https://github.com/microsoft/PSRule/issues
