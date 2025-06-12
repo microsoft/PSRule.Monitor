@@ -1,5 +1,11 @@
 # Support
 
+> [!NOTE]
+> This repository will be archived in the future.
+>
+> You may still continue to download and use this module from source or the PowerShell Gallery,
+> but it will not receive any further updates or support.
+
 ## How to file issues and get help
 
 This project uses GitHub Issues to track bugs and feature requests.

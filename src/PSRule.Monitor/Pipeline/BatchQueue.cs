@@ -2,7 +2,6 @@
 // Licensed under the MIT License.
 
 using System.Collections.Concurrent;
-using System.Collections.Generic;
 using PSRule.Monitor.Data;
 
 namespace PSRule.Monitor.Pipeline;

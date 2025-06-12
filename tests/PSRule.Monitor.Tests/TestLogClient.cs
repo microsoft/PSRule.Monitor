@@ -11,7 +11,7 @@ internal sealed class TestLogClient : ILogClient
 {
     public TestLogClient()
     {
-        Output = new List<LogEntry>();
+        Output = [];
     }
 
     public List<LogEntry> Output { get; }
@@ -30,23 +30,4 @@ internal sealed class TestLogClient : ILogClient
             json
         ));
     }
-}
-
-internal sealed class LogEntry
-{
-    public LogEntry(string signature, DateTime date, string resourceId, string json)
-    {
-        Signature = signature;
-        Date = date;
-        ResourceId = resourceId;
-        Json = json;
-    }
-
-    public string Signature { get; }
-
-    public DateTime Date { get; }
-
-    public string ResourceId { get; }
-
-    public string Json { get; }
 }

@@ -7,17 +7,12 @@ Log PSRule analysis results to Azure Monitor.
 > and this repository will be archived in the future.
 > The functionality of this module will be included PSRule in a future release.
 > This repository currently reflects functionality as a standalone module.
+>
+> You may still continue to download and use this module from source or the PowerShell Gallery,
+> but it will not receive any further updates or support.
+>
 > Please log any new issues at <https://github.com/microsoft/PSRule/issues>
 ---
-
-## Support
-
-This project uses GitHub Issues to track bugs and feature requests.
-Please search the existing issues before filing new issues to avoid duplicates.
-
-- For new issues, file your bug or feature request as a new [issue].
-
-Support for this project/ product is limited to the resources listed above.
 
 ## Getting the module
 
@@ -159,4 +154,3 @@ This project is [licensed under the MIT License](LICENSE).
 
 [install]: docs/scenarios/install-instructions.md
 [module]: https://www.powershellgallery.com/packages/PSRule.Monitor
-[issue]: https://github.com/microsoft/PSRule/issues

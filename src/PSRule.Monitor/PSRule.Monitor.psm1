@@ -44,7 +44,7 @@ function Send-PSRuleMonitorRecord {
 
         try {
             # Build the pipeline
-            $builder = [PSRule.Monitor.Pipeline.PipelineBuilder]::Injest($Null);
+            $builder = [PSRule.Monitor.Pipeline.PipelineBuilder]::Ingest($Null);
             $builder.WorkspaceId($WorkspaceId);
             $builder.SharedKey($SharedKey);
 
