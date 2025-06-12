@@ -68,7 +68,7 @@ public sealed class InjestPipelineTests
             key.AppendChar(c);
 
         logClient = new TestLogClient();
-        return new InjestPipeline(GetContent(), GetReader(), _WorkspaceId, key, logClient);
+        return new IngestPipeline(GetContent(), GetReader(), _WorkspaceId, key, logClient);
     }
 
     private static PipelineReader GetReader()

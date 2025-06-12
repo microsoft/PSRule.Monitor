@@ -1,7 +1,6 @@
 ﻿// Copyright (c) Microsoft Corporation.
 // Licensed under the MIT License.
 
-using System;
 using System.Management.Automation;
 using System.Security;
 using System.Text;
@@ -10,37 +9,17 @@ using PSRule.Monitor.Data;
 
 namespace PSRule.Monitor.Pipeline;
 
-internal static class WorkspaceClientExtensions
+internal sealed class WorkspaceClient(string workspaceId, SecureString sharedKey, ILogClient logClient) : MonitorClient
 {
-    public static void Enqueue(this WorkspaceClient client, PSObject[] results)
-    {
-        if (results == null || results.Length == 0)
-            return;
+    private const string CONTENT_TYPE = "application/json";
 
-        for (var i = 0; i < results.Length; i++)
-            client.Enqueue(results[i]);
-    }
-}
-
-internal sealed class WorkspaceClient : MonitorClient
-{
-    private const string CONTENTTYPE = "application/json";
-
-    private readonly CollectionHash _Hash;
-    private readonly BatchQueue _SubmissionQueue;
-    private readonly ILogClient _LogClient;
-    private readonly Guid _CorrelationId;
+    private readonly CollectionHash _Hash = new(workspaceId, sharedKey);
+    private readonly BatchQueue _SubmissionQueue = new();
+    private readonly ILogClient _LogClient = logClient;
+    private readonly Guid _CorrelationId = Guid.NewGuid();
 
     // Track whether Dispose has been called.
     private bool _Disposed;
-
-    public WorkspaceClient(string workspaceId, SecureString sharedKey, ILogClient logClient)
-    {
-        _Hash = new CollectionHash(workspaceId, sharedKey);
-        _SubmissionQueue = new BatchQueue();
-        _LogClient = logClient;
-        _CorrelationId = Guid.NewGuid();
-    }
 
     public void Enqueue(PSObject result)
     {
@@ -69,7 +48,7 @@ internal sealed class WorkspaceClient : MonitorClient
         // Create a hash for the API signature
         var date = DateTime.UtcNow;
         var data = Encoding.UTF8.GetBytes(json);
-        var signature = _Hash.ComputeSignature(data.Length, date, CONTENTTYPE);
+        var signature = _Hash.ComputeSignature(data.Length, date, CONTENT_TYPE);
         PostData(signature, date, resourceId, json);
     }
 

@@ -1,17 +1,10 @@
 ﻿// Copyright (c) Microsoft Corporation.
 // Licensed under the MIT License.
 
-using System;
 using System.Globalization;
-using System.Net.Http;
 using System.Text;
 
 namespace PSRule.Monitor.Pipeline;
-
-internal interface ILogClient : IDisposable
-{
-    void Post(string signature, DateTime date, string resourceId, string json);
-}
 
 internal sealed class LogClient : ILogClient
 {

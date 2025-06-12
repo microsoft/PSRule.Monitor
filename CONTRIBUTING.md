@@ -1,5 +1,11 @@
 # Contributing
 
+> [!NOTE]
+> This repository will be archived in the future.
+>
+> You may still continue to download and use this module from source or the PowerShell Gallery,
+> but it will not receive any further updates or support.
+
 This project welcomes contributions and suggestions. Most contributions require you to
 agree to a Contributor License Agreement (CLA) declaring that you have the right to,
 and actually do, grant us the rights to use your contribution. For details, visit
