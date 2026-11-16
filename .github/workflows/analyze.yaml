@@ -112,6 +112,8 @@ jobs:
       - name: Perform CodeQL Analysis
         uses: github/codeql-action/analyze@9418214df1f2c4b8128c770156c409013b07d6b9 # v3.39.3
         id: codeql-analyze
+        with:
+          upload: never
 
       - name: Upload results
         uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
